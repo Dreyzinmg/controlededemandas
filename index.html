@@ -592,8 +592,22 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 }
 .frete-btn:hover   { border-color: var(--green-accent); color: var(--green-main); }
 
+.card.rascunho { border-style: dashed; border-color: var(--border-dk); opacity: 0.75; }
+.card.rascunho::before { background: var(--text-dim); }
+.draft-badge {
+  display: inline-block;
+  font-size: 9.5px; font-weight: 700;
+  background: var(--bg2); color: var(--text-muted);
+  border: 1px solid var(--border-dk);
+  border-radius: 4px; padding: 1px 6px;
+  letter-spacing: 0.3px; margin-left: 4px;
+  vertical-align: middle;
+}
+
 .btn-concluir { background: #1565c0; color: #fff; }
 .btn-concluir:hover { background: #0d47a1; }
+.btn-excluir { background: var(--red-lt); color: var(--red); border: 1.5px solid #ef9a9a; }
+.btn-excluir:hover { background: var(--red); color: #fff; }
 
 /* scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1373,7 +1387,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
   </div><!-- /modal-body -->
 
   <div class="modal-foot">
-    <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-cancel" onclick="cancelarSC()">Cancelar</button>
+    <button class="btn btn-excluir" id="btn-excluir" onclick="excluirSC()" style="display:none">Excluir SC</button>
     <button class="btn btn-concluir" id="btn-concluir" onclick="concluirSC()" style="display:none">Concluir SC</button>
     <button class="btn btn-green" onclick="save()">Salvar SC</button>
   </div>
@@ -1785,10 +1800,10 @@ function render() {
           emergencial:'Emergencial', inicio:'Início',
         }[s.fase] || '';
         const card = document.createElement('div');
-        card.className = `card ${s.status}`;
+        card.className = `card ${s.status}${c.rascunho ? ' rascunho' : ''}`;
         card.onclick = () => openEdit(c.id);
         card.innerHTML = `
-          <div class="card-title">${c.titulo}</div>
+          <div class="card-title">${c.titulo || '<em style="color:var(--text-dim)">Sem título</em>'}${c.rascunho ? '<span class="draft-badge">RASCUNHO</span>' : ''}</div>
           <div class="card-age">${daysAgo(c.abertura)}${faseLabel ? ` · <span style="color:var(--text-mid);font-weight:500">${faseLabel}</span>` : ''}${c.analistaOC && s.fase==='suprimentos' ? ` · <span style="color:var(--blue);font-weight:600">${c.analistaOC}</span>` : ''}</div>
           <div class="mini-bar-wrap">
             <div class="mini-bar-top">
@@ -1828,11 +1843,35 @@ function renderKPI() {
 
 // ── MODAL ─────────────────────────────────────────────────
 function openNew(colId) {
-  editId = null;
-  document.getElementById('m-title').textContent = 'Nova Solicitação de Compra';
-  document.getElementById('m-sub').textContent = 'Preencha os dados';
+  // Se já existe rascunho sem título, abre ele
+  const rascunho = cards.find(c => c.rascunho);
+  if (rascunho && !colId) {
+    openEdit(rascunho.id);
+    return;
+  }
+  // Cria rascunho imediatamente
+  const draft = {
+    id: nextId++, rascunho: true,
+    col: colId || 'materiais', tipo: 'normal', titulo: '',
+    abertura: fmt(TODAY), fluig: '', limite: '', concluido: '', done: false,
+    resp: '', forn: '', prio: 'Normal', valor: '', gerente: '', analistaOC: '',
+    fluigNum: '', oc: '', pc: '', fluigResult: '', reprovMotivo: '',
+    fluigReaberto: '', dataOC: '', dataPC: '', pcForn: '',
+    fat: 'cc', fatNum: '', om: '', frete: '', freteObs: '',
+    cifForn: '', cifCNPJ: '', cifPrazo: '',
+    fluigFOB: '', fluigFOBdata: '', ocFOB: '', ocFOBdata: '', pcFOB: '', fobPrazo: '',
+    freteForn: '', freteCNPJ: '', freteValor: '', fretePrazo: '',
+    justif: '', itens: [], checklist: [], files: [],
+  };
+  cards.push(draft);
+  editId = draft.id;
+  render();
   resetForm();
   if (colId) document.getElementById('f-col').value = colId;
+  document.getElementById('m-title').textContent = 'Nova Solicitação de Compra';
+  document.getElementById('m-sub').textContent = '● Rascunho — preencha e salve';
+  const btnC = document.getElementById('btn-concluir');
+  if (btnC) btnC.style.display = 'none';
   document.getElementById('ov').classList.add('open');
 }
 
@@ -1884,9 +1923,11 @@ function openEdit(id) {
   if (c.fluigResult) setFluigResult(c.fluigResult);
   if (c.frete) selFrete(c.frete);
   selFat(c.fat||'cc');
-  // Mostrar botão Concluir só na edição
+  // Mostrar botões Concluir e Excluir só na edição
   const btnC = document.getElementById('btn-concluir');
   if (btnC) btnC.style.display = 'inline-flex';
+  const btnE = document.getElementById('btn-excluir');
+  if (btnE) btnE.style.display = 'inline-flex';
   // items
   document.getElementById('item-list').innerHTML=''; itmCnt=0;
   (c.itens||[]).forEach(it=>addItem(it.cod,it.desc));
@@ -1924,11 +1965,60 @@ function resetForm() {
   ['frete-cif','frete-fob'].forEach(id=>{const b=document.getElementById(id);if(b)b.className='frete-btn';});
   const btnC = document.getElementById('btn-concluir');
   if (btnC) btnC.style.display = 'none';
+  const btnE = document.getElementById('btn-excluir');
+  if (btnE) btnE.style.display = 'none';
   selTipo('normal'); selFat('cc');
 }
 
-function closeModal() { document.getElementById('ov').classList.remove('open'); }
-function ovClick(e) { if(e.target===document.getElementById('ov')) closeModal(); }
+function closeModal() {
+  // Salva rascunho automático se tiver título
+  if (editId !== null) {
+    const c = cards.find(x => x.id === editId);
+    if (c && c.rascunho) {
+      const titulo = (document.getElementById('f-titulo')||{}).value||'';
+      if (titulo.trim()) {
+        // Tem título: salva como rascunho com dados atuais
+        autoSaveDraft();
+      } else {
+        // Sem título: remove o rascunho vazio
+        const idx = cards.findIndex(x => x.id === editId);
+        if (idx >= 0) { cards.splice(idx, 1); fbDeleteCard(editId); }
+      }
+    }
+  }
+  document.getElementById('ov').classList.remove('open');
+  editId = null;
+  render();
+}
+
+function ovClick(e) {
+  // Clicar fora fecha mas salva rascunho — não perde dados
+  if (e.target === document.getElementById('ov')) closeModal();
+}
+
+function autoSaveDraft() {
+  if (editId === null) return;
+  const idx = cards.findIndex(c => c.id === editId);
+  if (idx < 0) return;
+  const data = collectFormData();
+  data.rascunho = true;
+  cards[idx] = { ...cards[idx], ...data };
+  fbSaveCard(cards[idx]);
+}
+
+function cancelarSC() {
+  // Botão Cancelar: remove rascunho explicitamente
+  if (editId !== null) {
+    const c = cards.find(x => x.id === editId);
+    if (c && c.rascunho) {
+      const idx = cards.findIndex(x => x.id === editId);
+      if (idx >= 0) { cards.splice(idx, 1); fbDeleteCard(editId); }
+    }
+  }
+  document.getElementById('ov').classList.remove('open');
+  editId = null;
+  render();
+}
 
 // ── TIPO ──────────────────────────────────────────────────
 const TIPO_MSGS = {
@@ -2018,6 +2108,19 @@ function selReceb(r) {
   Object.values(map).forEach(id => { const b=document.getElementById(id); if(b) b.className='fresult-btn'; });
   const selId = map[r];
   if (selId) { const b=document.getElementById(selId); if(b) b.className='fresult-btn sel-aprovado'; }
+}
+
+function excluirSC() {
+  if (editId === null) return;
+  const c = cards.find(x => x.id === editId);
+  const nome = c ? `"${c.titulo || 'Sem título'}"` : '';
+  if (!confirm(`Excluir a SC ${nome}?\n\nEssa ação remove o card permanentemente, sem gerar histórico.`)) return;
+  const idx = cards.findIndex(x => x.id === editId);
+  if (idx >= 0) { cards.splice(idx, 1); fbDeleteCard(editId); }
+  document.getElementById('ov').classList.remove('open');
+  editId = null;
+  render();
+  toast('SC excluída.');
 }
 
 function concluirSC() {
@@ -2302,9 +2405,7 @@ function renderFileList() {
 }
 
 // ── SAVE ──────────────────────────────────────────────────
-function save() {
-  const titulo = document.getElementById('f-titulo').value.trim();
-  if (!titulo) { toast('Informe o título da SC','w'); return; }
+function collectFormData() {
   const itens = Array.from(document.querySelectorAll('#item-list .item-row')).map(r=>({
     cod: r.querySelector('.item-cod').value,
     desc: r.querySelector('.item-desc').value
@@ -2315,43 +2416,51 @@ function save() {
   }));
   const files = [...fileStore];
   const limEl = document.getElementById('f-limite');
-  const data = {
-    titulo, tipo:curTipo, col:document.getElementById('f-col').value,
-    resp:document.getElementById('f-resp').value, forn:document.getElementById('f-forn').value,
-    valor:document.getElementById('f-valor').value,
-    abertura:document.getElementById('f-abertura').value,
-    fluig:document.getElementById('f-fluig').value,
-    fluigNum:document.getElementById('f-fluignum').value,
+  return {
+    titulo: (document.getElementById('f-titulo')||{}).value||'',
+    tipo: curTipo, col: document.getElementById('f-col').value,
+    resp: document.getElementById('f-resp').value,
+    forn: document.getElementById('f-forn').value,
+    valor: document.getElementById('f-valor').value,
+    abertura: document.getElementById('f-abertura').value,
+    fluig: document.getElementById('f-fluig').value,
+    fluigNum: document.getElementById('f-fluignum').value,
     gerente: (document.getElementById('f-gerente')||{}).value||'',
     fluigResult: curFluigResult,
     reprovMotivo: (document.getElementById('f-reprov-motivo')||{}).value||'',
     fluigReaberto: (document.getElementById('f-fluig-reaberto')||{}).value||'',
     dataOC: (document.getElementById('f-data-oc')||{}).value||'',
     limite: limEl ? limEl.textContent : '',
-    oc:document.getElementById('f-oc').value,
+    oc: document.getElementById('f-oc').value,
     analistaOC: (document.getElementById('f-analista-oc')||{}).value||'',
-    pc:document.getElementById('f-pc').value,
-    dataPC:   (document.getElementById('f-data-pc')||{}).value||'',
-    pcForn:   (document.getElementById('f-pc-forn')||{}).value||'',
+    pc: document.getElementById('f-pc').value,
+    dataPC: (document.getElementById('f-data-pc')||{}).value||'',
+    pcForn: (document.getElementById('f-pc-forn')||{}).value||'',
     frete: curFrete,
     freteObs: (document.getElementById('f-frete-obs')||{}).value||'',
-    cifForn:  (document.getElementById('f-cif-forn')||{}).value||'',
-    cifCNPJ:  (document.getElementById('f-cif-cnpj')||{}).value||'',
+    cifForn: (document.getElementById('f-cif-forn')||{}).value||'',
+    cifCNPJ: (document.getElementById('f-cif-cnpj')||{}).value||'',
     cifPrazo: (document.getElementById('f-cif-prazo')||{}).value||'',
     fluigFOB: (document.getElementById('f-fluig-fob')||{}).value||'',
-    fluigFOBdata:(document.getElementById('f-fluig-fob-data')||{}).value||'',
-    ocFOB:    (document.getElementById('f-oc-fob')||{}).value||'',
-    ocFOBdata:(document.getElementById('f-oc-fob-data')||{}).value||'',
-    pcFOB:    (document.getElementById('f-pc-fob')||{}).value||'',
+    fluigFOBdata: (document.getElementById('f-fluig-fob-data')||{}).value||'',
+    ocFOB: (document.getElementById('f-oc-fob')||{}).value||'',
+    ocFOBdata: (document.getElementById('f-oc-fob-data')||{}).value||'',
+    pcFOB: (document.getElementById('f-pc-fob')||{}).value||'',
     fobPrazo: (document.getElementById('f-fob-prazo')||{}).value||'',
-    freteForn:(document.getElementById('f-frete-forn')||{}).value||'',
-    freteCNPJ:(document.getElementById('f-frete-cnpj')||{}).value||'',
-    freteValor:(document.getElementById('f-frete-valor')||{}).value||'',
-    fretePrazo:(document.getElementById('f-frete-prazo')||{}).value||'',
-    justif:document.getElementById('f-justif').value,
-    fat:curFat, fatNum:document.getElementById('f-fatnum').value, om:'',
+    freteForn: (document.getElementById('f-frete-forn')||{}).value||'',
+    freteCNPJ: (document.getElementById('f-frete-cnpj')||{}).value||'',
+    freteValor: (document.getElementById('f-frete-valor')||{}).value||'',
+    fretePrazo: (document.getElementById('f-frete-prazo')||{}).value||'',
+    justif: document.getElementById('f-justif').value,
+    fat: curFat, fatNum: document.getElementById('f-fatnum').value, om: '',
     itens, checklist, files,
   };
+}
+
+function save() {
+  const data = collectFormData();
+  if (!data.titulo.trim()) { toast('Informe o título da SC','w'); return; }
+  data.rascunho = false; // ao salvar, deixa de ser rascunho
   if (editId!==null) {
     const i=cards.findIndex(c=>c.id===editId);
     if(i>=0) cards[i]={...cards[i],...data};
@@ -2872,27 +2981,33 @@ function setHistCol(btn, col) {
 }
 
 function reativar(id) {
-  const c = cardsDone.find(x => x.id === id);
-  if (!c) return;
-  // Cria nova SC ativa baseada na concluída
+  // Comparação robusta — id pode vir como string do Firebase
+  const c = cardsDone.find(x => String(x.id) === String(id));
+  if (!c) { toast('SC não encontrada no histórico.', 'w'); return; }
+
   const novo = {
     ...c,
     id: nextId++,
     done: false,
+    rascunho: false,
     abertura: fmt(TODAY),
-    fluig: fmt(TODAY),
-    limite: '',
-    concluido: '',
-    oc: '', pc: '',
-    checklist: c.checklist.map(ck => ({...ck, done: false})),
+    fluig: '',
+    fluigResult: '',
+    fluigReaberto: '',
+    dataOC: '', oc: '', pc: '', dataPC: '', pcForn: '',
+    frete: '', freteObs: '',
+    cifForn: '', cifCNPJ: '', cifPrazo: '',
+    fluigFOB: '', fluigFOBdata: '', ocFOB: '', ocFOBdata: '', pcFOB: '', fobPrazo: '',
+    limite: '', concluido: '',
+    checklist: (c.checklist || []).map(ck => ({...ck, done: false})),
+    files: [],
   };
-  // Calcular novo limite
-  const days = {normal:20, urgente:10, delegada:5, emergencial:0}[novo.tipo] || 20;
-  if (days > 0) novo.limite = fmt(addD(new Date(novo.abertura+'T00:00:00'), days));
+
   cards.push(novo);
+  fbSaveCard(novo);
   closeHist();
   render();
-  toast('SC reativada e adicionada ao board.');
+  toast('SC "' + novo.titulo + '" reativada com sucesso.');
 }
 
 function renderHist() {
