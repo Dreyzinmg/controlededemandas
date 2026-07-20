@@ -105,8 +105,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   background: var(--white);
   border-bottom: 1px solid var(--border);
   padding: 9px 24px;
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 14px;
   box-shadow: var(--shadow);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
 }
 
 .filter-label {
@@ -981,6 +984,20 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="pill" onclick="setSla(this,'risk')">Em risco</button>
     <button class="pill" onclick="setSla(this,'over')">Vencido</button>
   </div>
+  <div class="sep"></div>
+  <span class="filter-label">Fase</span>
+  <div class="pills" id="fase-tabs">
+    <button class="pill on" onclick="setFase(this,'all')">Todas</button>
+    <button class="pill" onclick="setFase(this,'fluig_pendente')">Ag. Fluig</button>
+    <button class="pill" onclick="setFase(this,'aguardando_gerente')">Ag. Gerente</button>
+    <button class="pill" onclick="setFase(this,'reprovado')">Reprovado</button>
+    <button class="pill" onclick="setFase(this,'aguardando_oc')">Ag. OC</button>
+    <button class="pill" onclick="setFase(this,'suprimentos')">Suprimentos</button>
+    <button class="pill" onclick="setFase(this,'frete_pendente')">Def. Frete</button>
+    <button class="pill" onclick="setFase(this,'cif_rastreio')">CIF Rastreio</button>
+    <button class="pill" onclick="setFase(this,'cif_entrega')">CIF Entrega</button>
+    <button class="pill" onclick="setFase(this,'fob_fluig,fob_gerente,fob_supr,fob_pc,fob_ok')">FOB</button>
+  </div>
 </div>
 
 <!-- KPI -->
@@ -1586,7 +1603,7 @@ let cards = [
 ];
 
 let nextId = 86, curTipo = 'normal', curFat = 'cc', editId = null, itmCnt = 0, ckCnt = 0;
-let activeTab = 'all', activeSla = 'all';
+let activeTab = 'all', activeSla = 'all', activeFase = 'all';
 
 // ── SLA ───────────────────────────────────────────────────
 // ── UTILITÁRIOS DE DIAS ÚTEIS ─────────────────────────────
@@ -1764,7 +1781,11 @@ function render() {
   COLS.forEach(col => {
     let list = cards.filter(c => c.col === col.id);
     if (activeTab !== 'all') list = list.filter(c => c.tipo === activeTab);
-    if (activeSla !== 'all') list = list.filter(c => getSLA(c).status === activeSla);
+    if (activeSla  !== 'all') list = list.filter(c => getSLA(c).status === activeSla);
+    if (activeFase !== 'all') {
+      const fases = activeFase.split(',');
+      list = list.filter(c => fases.includes(getSLA(c).fase));
+    }
 
     const wrap = document.createElement('div');
     wrap.className = 'col';
@@ -2482,6 +2503,13 @@ function setTab(btn,t) {
   btn.className='pill on';
   render();
 }
+function setFase(btn, f) {
+  activeFase = f;
+  document.querySelectorAll('#fase-tabs .pill').forEach(b => b.className='pill');
+  btn.className = 'pill on';
+  render();
+}
+
 function setSla(btn,f) {
   activeSla=f;
   document.querySelectorAll('#sla-tabs .pill').forEach(b=>b.className='pill');
