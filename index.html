@@ -613,6 +613,34 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .btn-excluir { background: var(--red-lt); color: var(--red); border: 1.5px solid #ef9a9a; }
 .btn-excluir:hover { background: var(--red); color: #fff; }
 
+/* ── ETAPA RECEBIMENTO ── */
+.receb-step {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.receb-step:last-child { border-bottom: none; }
+
+.receb-step-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--border-dk);
+  flex-shrink: 0;
+  margin-top: 5px;
+  transition: background 0.2s;
+}
+.receb-step-dot.done   { background: var(--green-accent); }
+.receb-step-dot.active { background: var(--yellow); }
+.receb-step-dot.late   { background: var(--red-mid); }
+
+.receb-step-body { flex: 1; }
+.receb-step-label {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text); margin-bottom: 8px;
+}
+
 /* scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -998,6 +1026,10 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="pill" onclick="setFase(this,'cif_rastreio')">CIF Rastreio</button>
     <button class="pill" onclick="setFase(this,'cif_entrega')">CIF Entrega</button>
     <button class="pill" onclick="setFase(this,'fob_fluig,fob_gerente,fob_supr,fob_pc,fob_ok')">FOB</button>
+    <button class="pill" onclick="setFase(this,'aguard_nf')">Aguard. NF</button>
+    <button class="pill" onclick="setFase(this,'aguard_contas')">Aguard. Contas</button>
+    <button class="pill" onclick="setFase(this,'finalizar_receb')">Finalizar Receb.</button>
+    <button class="pill" onclick="setFase(this,'recebido')">Recebido</button>
   </div>
 </div>
 
@@ -1314,6 +1346,88 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
         </div>
 
       </div><!-- /sec etapas -->
+
+      <!-- ── ETAPA 7: RECEBIMENTO E NOTA FISCAL ── -->
+      <div class="sec">
+        <div class="sec-title">Recebimento e Nota Fiscal</div>
+
+        <!-- 7.1: Material chegou -->
+        <div class="sla-step">
+          <div class="sla-step-num">7</div>
+          <div class="sla-step-body">
+            <div class="sla-step-label">Chegada do material na unidade</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+              <div class="fgrp">
+                <label class="flbl">Data de chegada</label>
+                <input type="date" class="fctl" id="f-chegada" oninput="calcReceb()" style="max-width:190px;">
+              </div>
+              <div class="fgrp" style="padding-top:22px;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-mid);">
+                  <input type="checkbox" id="f-chegou" onchange="calcReceb()" style="width:16px;height:16px;accent-color:var(--green-accent);cursor:pointer;">
+                  Material recebido na unidade
+                </label>
+              </div>
+            </div>
+
+            <!-- Painel NF — aparece após marcar chegada -->
+            <div id="receb-panel" style="display:none;margin-top:14px;">
+
+              <!-- 7.2: Aguardando NF (3du após chegada) -->
+              <div class="receb-step">
+                <div class="receb-step-dot" id="rdot-nf"></div>
+                <div class="receb-step-body">
+                  <div class="receb-step-label">Nota Fiscal <span class="sla-step-hint">— até 3 dias úteis após chegada</span></div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+                    <div class="fgrp">
+                      <label class="flbl">Data de recebimento da NF</label>
+                      <input type="date" class="fctl" id="f-nf-receb" oninput="calcReceb()" style="max-width:190px;">
+                    </div>
+                    <div class="fgrp">
+                      <label class="flbl">Nº da Nota Fiscal</label>
+                      <input class="fctl" id="f-nf-numero" placeholder="Ex: 012345" style="max-width:160px;">
+                    </div>
+                  </div>
+                  <div id="sla-nf" class="sla-note n-ok" style="display:none;margin-top:8px;"></div>
+                </div>
+              </div>
+
+              <!-- 7.3: NF com o time de contas (5du) -->
+              <div class="receb-step" id="receb-contas-wrap" style="display:none;">
+                <div class="receb-step-dot" id="rdot-contas"></div>
+                <div class="receb-step-body">
+                  <div class="receb-step-label">Time de Contas <span class="sla-step-hint">— até 5 dias úteis para devolver a NF</span></div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+                    <div class="fgrp">
+                      <label class="flbl">Responsável no time de contas</label>
+                      <input class="fctl" id="f-contas-resp" placeholder="Nome do responsável" style="max-width:200px;">
+                    </div>
+                    <div class="fgrp">
+                      <label class="flbl">Data de devolução da NF</label>
+                      <input type="date" class="fctl" id="f-nf-devol" oninput="calcReceb()" style="max-width:190px;">
+                    </div>
+                  </div>
+                  <div id="sla-contas" class="sla-note n-ok" style="display:none;margin-top:8px;"></div>
+                </div>
+              </div>
+
+              <!-- 7.4: Finalizar recebimento -->
+              <div class="receb-step" id="receb-final-wrap" style="display:none;">
+                <div class="receb-step-dot" id="rdot-final"></div>
+                <div class="receb-step-body">
+                  <div class="receb-step-label">Finalização do recebimento</div>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-mid);margin-top:4px;">
+                    <input type="checkbox" id="f-receb-ok" onchange="calcReceb()" style="width:16px;height:16px;accent-color:var(--green-accent);cursor:pointer;">
+                    Recebimento finalizado — processo concluído
+                  </label>
+                </div>
+              </div>
+
+            </div><!-- /receb-panel -->
+          </div>
+        </div>
+
+      </div><!-- /sec recebimento -->
+
     </div><!-- /rota-fluig -->
 
     <!-- ════════════════════════════════════════════
@@ -1641,6 +1755,32 @@ function addCalDays(fromStr, n) {
 function getSLA(card) {
   if (card.tipo === 'emergencial') return { pct:100, rest:0, status:'em', label:'Emergencial', fase:'emergencial', msg:'' };
 
+  // ── RECEBIMENTO: prioridade máxima — se material chegou, ignora fases anteriores ──
+  if (card.chegou && card.chegada) {
+    if (!card.nfReceb) {
+      const el = workDaysElapsed(card.chegada, TODAY);
+      const rest = 3 - el;
+      const pct = Math.min(100, Math.round(el/3*100));
+      if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}d s/ NF`, fase:'aguard_nf', msg:`NF não recebida — ${Math.abs(rest)} dia(s) útil(is) vencido(s). Acione o fornecedor.` };
+      if (rest===0) return { pct:90, rest:0, status:'risk', label:'NF vence hoje', fase:'aguard_nf', msg:'Último dia útil para receber a NF do fornecedor.' };
+      const st = pct>=66?'risk':pct>=33?'watch':'ok';
+      return { pct, rest, status:st, label:`${rest}du p/ NF`, fase:'aguard_nf', msg:`Material chegou — aguardando NF. ${rest} dia(s) útil(is) restantes.` };
+    }
+    if (!card.nfDevol) {
+      const el = workDaysElapsed(card.nfReceb, TODAY);
+      const rest = 5 - el;
+      const pct = Math.min(100, Math.round(el/5*100));
+      if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}d s/ contas`, fase:'aguard_contas', msg:`NF com o time de contas há ${Math.abs(rest)} dia(s) além do prazo. Cobre a devolução.` };
+      if (rest===0) return { pct:90, rest:0, status:'risk', label:'Contas vence hoje', fase:'aguard_contas', msg:'Último dia útil para o time de contas devolver a NF.' };
+      const st = pct>=60?'watch':'ok';
+      return { pct, rest, status:st, label:`${rest}du p/ contas`, fase:'aguard_contas', msg:`NF com ${card.contasResp||'time de contas'} — ${rest} dia(s) útil(is) restantes.` };
+    }
+    if (!card.recebOk) {
+      return { pct:95, rest:0, status:'ok', label:'Finalizar receb.', fase:'finalizar_receb', msg:'NF devolvida pelo time de contas. Finalize o recebimento.' };
+    }
+    return { pct:100, rest:0, status:'ok', label:'Recebido ✓', fase:'recebido', msg:'Processo concluído — material recebido e NF finalizada.' };
+  }
+
   const leadSupr = card.tipo === 'urgente' ? 10 : 20;
 
   // ── FASE 1: aguardando abertura do Fluig (3du do dia 0) ──
@@ -1820,6 +1960,8 @@ function render() {
           fob_fluig:'FOB — Fluig frete', fob_supr:'FOB — Suprimentos',
           fob_pc:'FOB — Aguard. PC', fob_ok:'FOB — Frete OK',
           emergencial:'Emergencial', inicio:'Início',
+          aguard_nf:'Aguard. NF', aguard_contas:'Aguard. Contas',
+          finalizar_receb:'Finalizar Receb.', recebido:'Recebido ✓',
         }[s.fase] || '';
         const card = document.createElement('div');
         card.className = `card ${s.status}${c.rascunho ? ' rascunho' : ''}`;
@@ -1937,6 +2079,14 @@ function openEdit(id) {
   const ffCNPJ = document.getElementById('f-frete-cnpj'); if(ffCNPJ) ffCNPJ.value = c.freteCNPJ||'';
   const ffVal  = document.getElementById('f-frete-valor'); if(ffVal) ffVal.value = c.freteValor||'';
   const ffPrz  = document.getElementById('f-frete-prazo'); if(ffPrz) ffPrz.value = c.fretePrazo||'';
+  const chEl   = document.getElementById('f-chegada');     if(chEl)  chEl.value  = c.chegada||'';
+  const chkEl  = document.getElementById('f-chegou');      if(chkEl) chkEl.checked = !!c.chegou;
+  const nfREl  = document.getElementById('f-nf-receb');    if(nfREl) nfREl.value  = c.nfReceb||'';
+  const nfNEl  = document.getElementById('f-nf-numero');   if(nfNEl) nfNEl.value  = c.nfNumero||'';
+  const ctEl   = document.getElementById('f-contas-resp'); if(ctEl)  ctEl.value   = c.contasResp||'';
+  const nfDEl  = document.getElementById('f-nf-devol');    if(nfDEl) nfDEl.value  = c.nfDevol||'';
+  const rkEl   = document.getElementById('f-receb-ok');    if(rkEl)  rkEl.checked = !!c.recebOk;
+  calcReceb();
   // Ocultar painel SLA se PC já preenchido
   const slaP = document.getElementById('sla-panel');
   if (slaP && c.pc) slaP.style.display = 'none';
@@ -2073,6 +2223,70 @@ function selFat(f) {
 }
 
 // ── CALC SLA ──────────────────────────────────────────────
+// ── RECEBIMENTO ───────────────────────────────────────────
+function calcReceb() {
+  const chegou  = document.getElementById('f-chegou')?.checked;
+  const chegada = document.getElementById('f-chegada')?.value;
+  const nfReceb = document.getElementById('f-nf-receb')?.value;
+  const nfDevol = document.getElementById('f-nf-devol')?.value;
+  const recebOk = document.getElementById('f-receb-ok')?.checked;
+
+  const panel = document.getElementById('receb-panel');
+  if (panel) panel.style.display = (chegou && chegada) ? 'block' : 'none';
+  if (!chegou || !chegada) return;
+
+  // ── NF: 3du após chegada ──
+  const slaEl   = document.getElementById('sla-nf');
+  const dotNF   = document.getElementById('rdot-nf');
+  const contasW = document.getElementById('receb-contas-wrap');
+  const finalW  = document.getElementById('receb-final-wrap');
+
+  if (nfReceb) {
+    // NF já recebida
+    if (dotNF)   dotNF.className   = 'receb-step-dot done';
+    if (slaEl)   { slaEl.className = 'sla-note n-ok'; slaEl.textContent = '✓ NF recebida em ' + nfReceb; slaEl.style.display = 'block'; }
+    if (contasW) contasW.style.display = 'flex';
+
+    // ── Contas: 5du após recebimento da NF ──
+    const slaContas = document.getElementById('sla-contas');
+    const dotContas = document.getElementById('rdot-contas');
+    if (nfDevol) {
+      if (dotContas) dotContas.className = 'receb-step-dot done';
+      if (slaContas) { slaContas.className = 'sla-note n-ok'; slaContas.textContent = '✓ NF devolvida em ' + nfDevol; slaContas.style.display = 'block'; }
+      if (finalW) finalW.style.display = 'flex';
+    } else {
+      const el   = workDaysElapsed(nfReceb, TODAY);
+      const rest = 5 - el;
+      const pct  = Math.min(100, Math.round(el/5*100));
+      if (dotContas) dotContas.className = `receb-step-dot ${rest < 0 ? 'late' : rest <= 1 ? 'active' : 'active'}`;
+      if (slaContas) {
+        slaContas.style.display = 'block';
+        if (rest < 0) { slaContas.className='sla-note n-err'; slaContas.textContent=`NF vencida há ${Math.abs(rest)} dia(s) útil(is) com o time de contas. Cobre a devolução.`; }
+        else if (rest===0) { slaContas.className='sla-note n-warn'; slaContas.textContent='Último dia útil — cobre o time de contas hoje.'; }
+        else { slaContas.className=pct>=60?'sla-note n-warn':'sla-note n-ok'; slaContas.textContent=`Time de contas tem ${rest} dia(s) útil(is) para devolver a NF.`; }
+      }
+      if (finalW) finalW.style.display = 'none';
+    }
+  } else {
+    // Aguardando NF
+    const el   = workDaysElapsed(chegada, TODAY);
+    const rest = 3 - el;
+    if (dotNF) dotNF.className = `receb-step-dot ${rest < 0 ? 'late' : 'active'}`;
+    if (slaEl) {
+      slaEl.style.display = 'block';
+      if (rest < 0) { slaEl.className='sla-note n-err'; slaEl.textContent=`NF não recebida — ${Math.abs(rest)} dia(s) útil(is) vencido(s). Acione o fornecedor.`; }
+      else if (rest===0) { slaEl.className='sla-note n-warn'; slaEl.textContent='Último dia útil para receber a NF.'; }
+      else { slaEl.className='sla-note n-ok'; slaEl.textContent=`Aguardando NF — ${rest} dia(s) útil(is) restantes.`; }
+    }
+    if (contasW) contasW.style.display = 'none';
+    if (finalW)  finalW.style.display  = 'none';
+  }
+
+  // Dot final
+  const dotFinal = document.getElementById('rdot-final');
+  if (dotFinal) dotFinal.className = `receb-step-dot ${recebOk ? 'done' : ''}`;
+}
+
 // ── FLUIG RESULT ──────────────────────────────────────────
 let curFluigResult = '';
 let curFrete = '';
@@ -2473,6 +2687,13 @@ function collectFormData() {
     freteCNPJ: (document.getElementById('f-frete-cnpj')||{}).value||'',
     freteValor: (document.getElementById('f-frete-valor')||{}).value||'',
     fretePrazo: (document.getElementById('f-frete-prazo')||{}).value||'',
+    chegada:    (document.getElementById('f-chegada')||{}).value||'',
+    chegou:     document.getElementById('f-chegou')?.checked||false,
+    nfReceb:    (document.getElementById('f-nf-receb')||{}).value||'',
+    nfNumero:   (document.getElementById('f-nf-numero')||{}).value||'',
+    contasResp: (document.getElementById('f-contas-resp')||{}).value||'',
+    nfDevol:    (document.getElementById('f-nf-devol')||{}).value||'',
+    recebOk:    document.getElementById('f-receb-ok')?.checked||false,
     justif: document.getElementById('f-justif').value,
     fat: curFat, fatNum: document.getElementById('f-fatnum').value, om: '',
     itens, checklist, files,
