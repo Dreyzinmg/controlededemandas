@@ -613,7 +613,62 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .btn-excluir { background: var(--red-lt); color: var(--red); border: 1.5px solid #ef9a9a; }
 .btn-excluir:hover { background: var(--red); color: #fff; }
 
-/* ── ETAPA RECEBIMENTO ── */
+/* ── RECEBIMENTO MELHORADO ── */
+.receb-chegada-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.receb-check-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mid);
+  padding-bottom: 8px;
+  user-select: none;
+}
+
+.receb-card {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.receb-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.receb-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.receb-card-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.receb-card-body {
+  padding: 12px 14px;
+}
+
+/* ── ETAPA RECEBIMENTO (dots) ── */
 .receb-step {
   display: flex;
   gap: 12px;
@@ -1181,14 +1236,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
         <div class="sla-step">
           <div class="sla-step-num">1</div>
           <div class="sla-step-body">
-            <div class="sla-step-label">Abertura da solicitação <span class="sla-step-hint">— dia zero</span></div>
-            <input type="date" class="fctl" id="f-abertura" oninput="calcSLA()" style="max-width:200px;">
-          </div>
-        </div>
-
-        <div class="sla-step">
-          <div class="sla-step-num">2</div>
-          <div class="sla-step-body">
             <div class="sla-step-label">Abertura do Fluig <span class="sla-step-hint">— até 3 dias úteis após solicitação</span></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
               <div class="fgrp">
@@ -1212,7 +1259,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
         </div>
 
         <div class="sla-step">
-          <div class="sla-step-num">3</div>
+          <div class="sla-step-num">2</div>
           <div class="sla-step-body">
             <div class="sla-step-label">Resultado do Fluig <span class="sla-step-hint">— gerente responde em até 3 dias úteis</span></div>
             <div class="fluig-result-btns">
@@ -1243,7 +1290,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
 
         <!-- Etapa 4: OC — oculta para Delegada (sem lead time suprimentos) -->
         <div class="sla-step" id="step-oc-normal">
-          <div class="sla-step-num">4</div>
+          <div class="sla-step-num">3</div>
           <div class="sla-step-body">
             <div class="sla-step-label">Ordem de Compra <span class="sla-step-hint" id="oc-hint">— início da contagem SLA do suprimentos (20 dias úteis)</span></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
@@ -1274,7 +1321,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
 
         <!-- Etapa 5: Pedido de Compra -->
         <div class="sla-step">
-          <div class="sla-step-num">5</div>
+          <div class="sla-step-num">4</div>
           <div class="sla-step-body">
             <div class="sla-step-label">Pedido de Compra</div>
             <div class="g3">
@@ -1296,7 +1343,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
 
         <!-- Etapa 6: Frete -->
         <div class="sla-step">
-          <div class="sla-step-num">6</div>
+          <div class="sla-step-num">5</div>
           <div class="sla-step-body">
             <div class="sla-step-label">Tipo de Frete</div>
 
@@ -1400,73 +1447,87 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
       <div class="sec">
         <div class="sec-title">Recebimento e Nota Fiscal</div>
 
-        <!-- 7.1: Material chegou -->
         <div class="sla-step">
-          <div class="sla-step-num">7</div>
+          <div class="sla-step-num">6</div>
           <div class="sla-step-body">
             <div class="sla-step-label">Chegada do material na unidade</div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+
+            <!-- Linha: data + checkbox lado a lado -->
+            <div class="receb-chegada-row">
               <div class="fgrp">
                 <label class="flbl">Data de chegada</label>
-                <input type="date" class="fctl" id="f-chegada" oninput="calcReceb()" style="max-width:190px;">
+                <input type="date" class="fctl" id="f-chegada" oninput="calcReceb()">
               </div>
-              <div class="fgrp" style="padding-top:22px;">
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-mid);">
-                  <input type="checkbox" id="f-chegou" onchange="calcReceb()" style="width:16px;height:16px;accent-color:var(--green-accent);cursor:pointer;">
-                  Material recebido na unidade
-                </label>
-              </div>
+              <label class="receb-check-label">
+                <input type="checkbox" id="f-chegou" onchange="calcReceb()" style="accent-color:var(--green-accent);">
+                <span>Material confirmado na unidade</span>
+              </label>
             </div>
 
-            <!-- Painel NF — aparece após marcar chegada -->
+            <!-- Painel NF expandido após confirmar chegada -->
             <div id="receb-panel" style="display:none;margin-top:14px;">
 
-              <!-- 7.2: Aguardando NF (3du após chegada) -->
-              <div class="receb-step">
-                <div class="receb-step-dot" id="rdot-nf"></div>
-                <div class="receb-step-body">
-                  <div class="receb-step-label">Nota Fiscal <span class="sla-step-hint">— até 3 dias úteis após chegada</span></div>
-                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+              <!-- NF -->
+              <div class="receb-card" id="receb-nf-card">
+                <div class="receb-card-hdr">
+                  <div class="receb-step-dot" id="rdot-nf"></div>
+                  <div>
+                    <div class="receb-card-title">Nota Fiscal</div>
+                    <div class="receb-card-hint">até 3 dias úteis após chegada</div>
+                  </div>
+                </div>
+                <div class="receb-card-body">
+                  <div class="g2">
                     <div class="fgrp">
                       <label class="flbl">Data de recebimento da NF</label>
-                      <input type="date" class="fctl" id="f-nf-receb" oninput="calcReceb()" style="max-width:190px;">
+                      <input type="date" class="fctl" id="f-nf-receb" oninput="calcReceb()">
                     </div>
                     <div class="fgrp">
                       <label class="flbl">Nº da Nota Fiscal</label>
-                      <input class="fctl" id="f-nf-numero" placeholder="Ex: 012345" style="max-width:160px;">
+                      <input class="fctl" id="f-nf-numero" placeholder="Ex: 012345">
                     </div>
                   </div>
-                  <div id="sla-nf" class="sla-note n-ok" style="display:none;margin-top:8px;"></div>
+                  <div id="sla-nf" class="sla-note" style="display:none;margin-top:8px;"></div>
                 </div>
               </div>
 
-              <!-- 7.3: NF com o time de contas (5du) -->
-              <div class="receb-step" id="receb-contas-wrap" style="display:none;">
-                <div class="receb-step-dot" id="rdot-contas"></div>
-                <div class="receb-step-body">
-                  <div class="receb-step-label">Time de Contas <span class="sla-step-hint">— até 5 dias úteis para devolver a NF</span></div>
-                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+              <!-- Time de Contas -->
+              <div class="receb-card" id="receb-contas-wrap" style="display:none;">
+                <div class="receb-card-hdr">
+                  <div class="receb-step-dot" id="rdot-contas"></div>
+                  <div>
+                    <div class="receb-card-title">Time de Contas</div>
+                    <div class="receb-card-hint">até 5 dias úteis para devolver a NF</div>
+                  </div>
+                </div>
+                <div class="receb-card-body">
+                  <div class="g2">
                     <div class="fgrp">
-                      <label class="flbl">Responsável no time de contas</label>
-                      <input class="fctl" id="f-contas-resp" placeholder="Nome do responsável" style="max-width:200px;">
+                      <label class="flbl">Responsável</label>
+                      <input class="fctl" id="f-contas-resp" placeholder="Nome do responsável">
                     </div>
                     <div class="fgrp">
                       <label class="flbl">Data de devolução da NF</label>
-                      <input type="date" class="fctl" id="f-nf-devol" oninput="calcReceb()" style="max-width:190px;">
+                      <input type="date" class="fctl" id="f-nf-devol" oninput="calcReceb()">
                     </div>
                   </div>
-                  <div id="sla-contas" class="sla-note n-ok" style="display:none;margin-top:8px;"></div>
+                  <div id="sla-contas" class="sla-note" style="display:none;margin-top:8px;"></div>
                 </div>
               </div>
 
-              <!-- 7.4: Finalizar recebimento -->
-              <div class="receb-step" id="receb-final-wrap" style="display:none;">
-                <div class="receb-step-dot" id="rdot-final"></div>
-                <div class="receb-step-body">
-                  <div class="receb-step-label">Finalização do recebimento</div>
-                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-mid);margin-top:4px;">
-                    <input type="checkbox" id="f-receb-ok" onchange="calcReceb()" style="width:16px;height:16px;accent-color:var(--green-accent);cursor:pointer;">
-                    Recebimento finalizado — processo concluído
+              <!-- Finalização -->
+              <div class="receb-card" id="receb-final-wrap" style="display:none;">
+                <div class="receb-card-hdr">
+                  <div class="receb-step-dot" id="rdot-final"></div>
+                  <div>
+                    <div class="receb-card-title">Finalização do Recebimento</div>
+                    <div class="receb-card-hint">marque quando o processo estiver encerrado</div>
+                  </div>
+                </div>
+                <div class="receb-card-body">
+                  <label class="receb-check-label" style="margin-top:4px;">
+                    <input type="checkbox" id="f-receb-ok" onchange="calcReceb()" style="accent-color:var(--green-accent);">
+                    <span>Recebimento finalizado — processo concluído</span>
                   </label>
                 </div>
               </div>
@@ -2075,7 +2136,7 @@ function openEdit(id) {
   setV('f-resp',     c.resp);
   setV('f-forn',     c.forn);
   setV('f-valor',    c.valor);
-  setV('f-abertura', c.abertura);
+  // abertura capturada automaticamente no save() — não editável
   setV('f-fluig',    c.fluig);
   setV('f-fluignum', c.fluigNum);
   setV('f-gerente',  c.gerente);
@@ -2147,11 +2208,11 @@ function resetForm() {
   ['f-titulo','f-resp','f-forn','f-valor','f-fluignum','f-gerente','f-oc','f-analista-oc','f-pc','f-pc-forn','f-justif','f-fatnum','f-frete-obs'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
-  ['f-abertura','f-fluig','f-data-oc','f-fluig-reaberto'].forEach(id=>{
+  ['f-fluig','f-data-oc','f-fluig-reaberto'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   const lim=document.getElementById('f-limite'); if(lim) lim.textContent='—';
-  document.getElementById('f-abertura').value = fmt(TODAY);
+
   document.getElementById('item-list').innerHTML=''; itmCnt=0;
   document.getElementById('ck-list').innerHTML=''; ckCnt=0;
   fileStore = [];
@@ -2495,7 +2556,8 @@ function addWorkDays(startDate, n) {
 }
 
 function calcSLA() {
-  const abertura  = document.getElementById('f-abertura').value;
+  const _card = editId !== null ? cards.find(x=>String(x.id)===String(editId)) : null;
+  const abertura = _card?.abertura || fmt(TODAY);
   const fluigDate = document.getElementById('f-fluig').value;
   const reaberto  = document.getElementById('f-fluig-reaberto') ? document.getElementById('f-fluig-reaberto').value : '';
   const dataOC    = document.getElementById('f-data-oc') ? document.getElementById('f-data-oc').value : '';
@@ -2767,7 +2829,7 @@ function collectFormData() {
     forn: document.getElementById('f-forn').value,
     delTipo: curDelTipo,
     valor: document.getElementById('f-valor').value,
-    abertura: document.getElementById('f-abertura').value,
+    abertura: (editId !== null && cards.find(x=>String(x.id)===String(editId))?.abertura) || fmt(TODAY),
     fluig: document.getElementById('f-fluig').value,
     fluigNum: document.getElementById('f-fluignum').value,
     gerente: (document.getElementById('f-gerente')||{}).value||'',
@@ -3468,7 +3530,7 @@ function initFirebase() {
 }
 
 // ── INIT ──────────────────────────────────────────────────
-document.getElementById('f-abertura').value = fmt(TODAY);
+// abertura capturada automaticamente no save() — campo removido do formulário
 // initFirebase() é chamado pelo watchAuth após login bem-sucedido
 render();
 </script>
