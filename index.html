@@ -1375,14 +1375,15 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
                   <input class="fctl" id="f-cif-cnpj" placeholder="00.000.000/0001-00">
                 </div>
                 <div class="fgrp">
-                  <label class="flbl">Prazo de entrega</label>
-                  <input class="fctl" id="f-cif-prazo" placeholder="Ex: 10 dias corridos">
+                  <label class="flbl">Data prevista de entrega (transportadora)</label>
+                  <input type="date" class="fctl" id="f-cif-prazo" oninput="calcPrazoFrete('cif')">
                 </div>
                 <div class="fgrp">
                   <label class="flbl">Código de rastreio</label>
                   <input class="fctl" id="f-frete-obs" placeholder="Ex: BR123456789BR">
                 </div>
               </div>
+              <div id="frete-status-cif" style="display:none;margin-top:8px;"></div>
             </div>
 
             <!-- FOB: ciclo completo Fluig → OC → PC do frete -->
@@ -1410,10 +1411,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
                   <input class="fctl" id="f-pc-fob" placeholder="Emitido ao transportador">
                 </div>
                 <div class="fgrp">
-                  <label class="flbl">Prazo de entrega</label>
-                  <input class="fctl" id="f-fob-prazo" placeholder="Ex: 5 dias úteis">
+                  <label class="flbl">Data prevista de entrega (transportadora)</label>
+                  <input type="date" class="fctl" id="f-fob-prazo" oninput="calcPrazoFrete('fob')">
                 </div>
               </div>
+              <div id="frete-status-fob" style="display:none;margin-top:8px;"></div>
             </div>
 
             <!-- DEDICADO: transportadora, CNPJ, valor, prazo -->
@@ -1429,13 +1431,14 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
                 </div>
                 <div class="fgrp">
                   <label class="flbl">Valor do frete (R$)</label>
-                  <input class="fctl" id="f-frete-valor" placeholder="Ex: 850,00">
+                  <input class="fctl" id="f-frete-valor" placeholder="Ex: 850,00" oninput="maskBRL(this)">
                 </div>
                 <div class="fgrp">
-                  <label class="flbl">Prazo de entrega</label>
-                  <input class="fctl" id="f-frete-prazo" placeholder="Ex: 3 dias úteis">
+                  <label class="flbl">Data prevista de entrega (transportadora)</label>
+                  <input type="date" class="fctl" id="f-frete-prazo" oninput="calcPrazoFrete('ded')">
                 </div>
               </div>
+              <div id="frete-status-ded" style="display:none;margin-top:8px;"></div>
             </div>
 
           </div>
@@ -1930,23 +1933,35 @@ function getSLA(card) {
         const st = restR <= 1 ? 'risk' : restR <= 3 ? 'watch' : 'ok';
         return { pct:Math.min(100,Math.round((5-restR)/5*100)), rest:restR, status:st, label:`${restR}du p/ rastreio`, fase:'cif_rastreio', msg:`Informe rastreio/transportadora em até ${restR} dia(s) útil(is).` };
       }
-      // CIF com rastreio informado: 15 dias corridos para chegada
-      // Conta 15 dias corridos a partir do momento em que o rastreio foi informado
-      // Como não temos data exata, usamos dataOC + leadSupr + 5 + 15 como proxy
-      const baseCheg = card.dataOC ? addCalDays(addWorkDaysFrom(card.dataOC, leadSupr + 5), 15) : null;
-      if (!baseCheg) return { pct:80, rest:null, status:'ok', label:'CIF em trânsito', fase:'cif_entrega', msg:'Aguardando chegada do material.' };
-      const restDias = Math.round((new Date(baseCheg+'T00:00:00') - TODAY) / 86400000);
-      if (restDias < 0) return { pct:100, rest:restDias, status:'over', label:`${Math.abs(restDias)}d s/ receber`, fase:'cif_entrega', msg:'Prazo CIF vencido — acione o fornecedor.' };
-      const st = restDias <= 3 ? 'risk' : restDias <= 7 ? 'watch' : 'ok';
-      return { pct:Math.min(100,Math.round((15-restDias)/15*100)), rest:restDias, status:st, label:`${restDias}d p/ chegada`, fase:'cif_entrega', msg:`CIF em trânsito — chegada esperada em ${restDias} dia(s) corridos.` };
+      // CIF com rastreio: usar previsão de entrega se informada
+      if (card.cifPrazo) {
+        const prev = new Date(card.cifPrazo + 'T00:00:00');
+        const diff = Math.round((prev - TODAY) / 86400000);
+        const fmtPrev = card.cifPrazo.split('-').reverse().join('/');
+        if (diff < 0)  return { pct:100, rest:diff, status:'over', label:`${Math.abs(diff)}d atrasado`, fase:'cif_entrega', msg:`Entrega CIF atrasada há ${Math.abs(diff)} dia(s). Previsão era ${fmtPrev}. Acione o fornecedor.` };
+        if (diff === 0) return { pct:95, rest:0, status:'risk', label:'Entrega hoje', fase:'cif_entrega', msg:`Entrega CIF prevista para hoje (${fmtPrev}).` };
+        const st = diff <= 3 ? 'watch' : 'ok';
+        return { pct:Math.min(90,Math.round((1-diff/30)*100)), rest:diff, status:st, label:`Entrega em ${diff}d`, fase:'cif_entrega', msg:`CIF em trânsito — entrega prevista em ${diff} dia(s) (${fmtPrev}).` };
+      }
+      // Sem previsão: alerta aguardando
+      return { pct:60, rest:null, status:'watch', label:'Ag. previsão entrega', fase:'cif_entrega', msg:'Rastreio informado. Informe a previsão de entrega do fornecedor.' };
     }
 
     // ── DEDICADO: monitora campos informados ──
     if (card.frete === 'DEDICADO') {
-      if (!card.freteForn || !card.freteObs) {
-        return { pct:60, rest:null, status:'watch', label:'Frete dedicado', fase:'ded_pendente', msg:'Informe transportadora e observações do frete dedicado.' };
+      if (!card.freteForn) {
+        return { pct:60, rest:null, status:'watch', label:'Frete dedicado', fase:'ded_pendente', msg:'Informe a transportadora do frete dedicado.' };
       }
-      return { pct:90, rest:null, status:'ok', label:'Frete dedicado OK', fase:'ded_ok', msg:`Frete dedicado contratado${card.freteForn?' — '+card.freteForn:''}.` };
+      if (card.fretePrazo) {
+        const prev = new Date(card.fretePrazo + 'T00:00:00');
+        const diff = Math.round((prev - TODAY) / 86400000);
+        const fmtPrev = card.fretePrazo.split('-').reverse().join('/');
+        if (diff < 0)  return { pct:100, rest:diff, status:'over', label:`${Math.abs(diff)}d atrasado`, fase:'ded_ok', msg:`Frete dedicado atrasado há ${Math.abs(diff)} dia(s). Acione ${card.freteForn||'a transportadora'}.` };
+        if (diff === 0) return { pct:95, rest:0, status:'risk', label:'Entrega hoje', fase:'ded_ok', msg:`Entrega dedicada prevista para hoje.` };
+        const st = diff <= 3 ? 'watch' : 'ok';
+        return { pct:Math.min(90,Math.round((1-diff/30)*100)), rest:diff, status:st, label:`Entrega em ${diff}d`, fase:'ded_ok', msg:`Frete dedicado — entrega em ${diff} dia(s) (${fmtPrev}) via ${card.freteForn||''}.` };
+      }
+      return { pct:80, rest:null, status:'ok', label:'Ag. previsão entrega', fase:'ded_ok', msg:`Frete dedicado contratado — informe a previsão de entrega.` };
     }
 
     // ── FOB: novo ciclo completo ──
@@ -1983,8 +1998,15 @@ function getSLA(card) {
         return { pct:pctF, rest, status:st, label:`${rest}du p/ PC frete`, fase:'fob_supr', msg:`Suprimentos tem ${rest} dia(s) útil(is) para emitir OC/PC do frete (${leadFOB}du).` };
       }
 
-      // FOB Fase 4: PC do frete emitido — processo interno concluído
-      return { pct:100, rest:0, status:'ok', label:'FOB — PC emitido', fase:'fob_ok', msg:'PC do frete FOB emitido. Acompanhe a entrega com o transportador.' };
+      // FOB Fase 4: PC do frete emitido — monitorar data de entrega
+      if (card.fobPrazo) {
+        const diff = Math.round((new Date(card.fobPrazo+'T00:00:00') - TODAY) / 86400000);
+        if (diff < 0)  return { pct:100, rest:diff, status:'over', label:`${Math.abs(diff)}d atrasado`, fase:'fob_ok', msg:`FOB em atraso — entrega era ${card.fobPrazo.split('-').reverse().join('/')}. Acione a transportadora.` };
+        if (diff === 0) return { pct:90, rest:0, status:'risk', label:'Entrega FOB hoje', fase:'fob_ok', msg:'Entrega FOB prevista para hoje.' };
+        if (diff <= 3)  return { pct:75, rest:diff, status:'watch', label:`FOB: ${diff}d`, fase:'fob_ok', msg:`FOB em trânsito — entrega em ${diff} dia(s).` };
+        return { pct:50, rest:diff, status:'ok', label:`FOB: ${diff}d`, fase:'fob_ok', msg:`FOB em trânsito — entrega prevista em ${diff} dia(s).` };
+      }
+      return { pct:100, rest:0, status:'ok', label:'FOB — em trânsito', fase:'fob_ok', msg:'PC do frete FOB emitido. Informe a data prevista de entrega da transportadora.' };
     }
   }
 
@@ -2171,6 +2193,8 @@ function openEdit(id) {
   setV('f-nf-devol',       c.nfDevol);
   setC('f-receb-ok',       c.recebOk);
   calcReceb();
+  // Atualizar status de prazo dos fretes ao abrir card
+  ['cif','fob','ded'].forEach(t => calcPrazoFrete(t));
   // Ocultar painel SLA se PC já preenchido
   const slaP = document.getElementById('sla-panel');
   if (slaP && c.pc) slaP.style.display = 'none';
@@ -2179,6 +2203,8 @@ function openEdit(id) {
   curDelTipo = c.delTipo||''; if(c.delTipo) selDelTipo(c.delTipo);
   if (c.fluigResult) setFluigResult(c.fluigResult);
   if (c.frete) selFrete(c.frete);
+  // Recalcular painéis de previsão de entrega
+  calcPrazoFrete('cif'); calcPrazoFrete('fob'); calcPrazoFrete('ded');
   selFat(c.fat||'cc');
   // Mostrar botões Concluir e Excluir só na edição
   const btnC = document.getElementById('btn-concluir');
@@ -2402,6 +2428,36 @@ function calcReceb() {
   // Dot final
   const dotFinal = document.getElementById('rdot-final');
   if (dotFinal) dotFinal.className = `receb-step-dot ${recebOk ? 'done' : ''}`;
+}
+
+// ── PREVISÃO DE ENTREGA DO FRETE ─────────────────────────
+function calcPrazoFrete(tipo) {
+  const ids = { cif: ['f-cif-prazo','frete-status-cif'], fob: ['f-fob-prazo','frete-status-fob'], ded: ['f-frete-prazo','frete-status-ded'] };
+  const [inputId, panelId] = ids[tipo] || [];
+  if (!inputId) return;
+  const dataEl  = document.getElementById(inputId);
+  const panelEl = document.getElementById(panelId);
+  if (!dataEl || !panelEl) return;
+  const val = dataEl.value;
+  if (!val) { panelEl.style.display = 'none'; return; }
+
+  const prev   = new Date(val + 'T00:00:00');
+  const diff   = Math.round((prev - TODAY) / 86400000);
+  panelEl.style.display = 'block';
+
+  if (diff < 0) {
+    panelEl.className = 'sla-note n-err';
+    panelEl.textContent = `Entrega atrasada — previsão era ${val.split('-').reverse().join('/')} (${Math.abs(diff)} dia(s) vencido(s)). Acione o fornecedor.`;
+  } else if (diff === 0) {
+    panelEl.className = 'sla-note n-warn';
+    panelEl.textContent = 'Entrega prevista para hoje.';
+  } else if (diff <= 3) {
+    panelEl.className = 'sla-note n-warn';
+    panelEl.textContent = `Entrega em ${diff} dia(s) — ${val.split('-').reverse().join('/')}.`;
+  } else {
+    panelEl.className = 'sla-note n-ok';
+    panelEl.textContent = `Entrega prevista em ${diff} dia(s) — ${val.split('-').reverse().join('/')}.`;
+  }
 }
 
 // ── MÁSCARA BRL ───────────────────────────────────────────
