@@ -2201,8 +2201,8 @@ function openEdit(id) {
   const frRe  = document.getElementById('f-fluig-reaberto'); if(frRe) frRe.value = c.fluigReaberto||'';
   const frMot = document.getElementById('f-reprov-motivo');  if(frMot) frMot.value = c.reprovMotivo||'';
   curDelTipo = c.delTipo||''; if(c.delTipo) selDelTipo(c.delTipo);
-  if (c.fluigResult) setFluigResult(c.fluigResult);
-  if (c.frete) selFrete(c.frete);
+  if (c.fluigResult) loadFluigResult(c.fluigResult);
+  if (c.frete) loadFrete(c.frete);
   // Recalcular painéis de previsão de entrega
   calcPrazoFrete('cif'); calcPrazoFrete('fob'); calcPrazoFrete('ded');
   selFat(c.fat||'cc');
@@ -2479,6 +2479,29 @@ function selDelTipo(t) {
   // Na delegada de serviço: ocultar etapa de frete (serviço não tem frete)
   const stepPC = document.getElementById('step-pc-wrap');
   if (stepPC) stepPC.style.display = t==='servico' ? 'none' : '';
+}
+
+// ── CARREGAR estado salvo (sem validação) ─────────────────
+function loadFluigResult(r) {
+  curFluigResult = r;
+  ['aprovado','reprovado'].forEach(x => {
+    const b = document.getElementById('fb-'+x);
+    if (b) b.className = `fresult-btn${x===r?' sel-'+x:''}`;
+  });
+  const box = document.getElementById('fluig-reprov-box');
+  if (box) box.style.display = r==='reprovado' ? 'block' : 'none';
+  calcSLA();
+}
+
+function loadFrete(f) {
+  curFrete = f;
+  ['CIF','FOB','DEDICADO'].forEach(x => {
+    const c = document.getElementById('fc-'+x);
+    if (c) c.className = 'frete-card' + (x===f ? ' sel-'+x.toLowerCase() : '');
+    const b = document.getElementById('frete-box-'+x);
+    if (b) b.style.display = x===f ? 'block' : 'none';
+  });
+  calcSLA();
 }
 
 // ── TOGGLE BOTÕES (deselecionar ao clicar novamente) ──────
