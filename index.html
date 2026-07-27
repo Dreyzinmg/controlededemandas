@@ -1244,22 +1244,23 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
           <label class="flbl">Valor estimado (R$)</label>
           <input class="fctl" id="f-valor" placeholder="R$ 0,00" oninput="maskBRL(this)">
         </div>
-        <!-- Delegada: tipo de SC (serviço ou material) -->
-        <div class="fgrp span2" id="delegada-tipo-wrap" style="display:none;">
-          <label class="flbl">Tipo de compra</label>
-          <div class="del-tipo-grid">
-            <button class="del-tipo-btn" id="del-mat" onclick="selDelTipo('material')">
-              <div class="del-tipo-icon">📦</div>
-              <div class="del-tipo-title">Material / Peça</div>
-              <div class="del-tipo-hint">Limite R$ 5 mil · inclui frete</div>
-            </button>
-            <button class="del-tipo-btn" id="del-srv" onclick="selDelTipo('servico')">
-              <div class="del-tipo-icon">🔧</div>
-              <div class="del-tipo-title">Serviço</div>
-              <div class="del-tipo-hint">Limite R$ 10 mil · sem frete</div>
-            </button>
-          </div>
-        </div>
+      </div>
+    </div>
+
+    <!-- TIPO DE COMPRA (todos os tipos de SC) -->
+    <div class="sec">
+      <div class="sec-title">Tipo de compra</div>
+      <div class="del-tipo-grid" id="comp-tipo-grid">
+        <button class="del-tipo-btn" id="del-mat" onclick="selDelTipo('material')">
+          <div class="del-tipo-icon">📦</div>
+          <div class="del-tipo-title">Material / Peça</div>
+          <div class="del-tipo-hint">Compra de itens físicos · inclui frete</div>
+        </button>
+        <button class="del-tipo-btn" id="del-srv" onclick="selDelTipo('servico')">
+          <div class="del-tipo-icon">🔧</div>
+          <div class="del-tipo-title">Serviço</div>
+          <div class="del-tipo-hint">Prestação de serviço · sem frete</div>
+        </button>
       </div>
     </div>
 
@@ -2012,9 +2013,9 @@ function getSLA(card) {
   // ── FASE 3: OC gerada — lead time do suprimentos (20 ou 10du) ──
   // Só conta enquanto PC NÃO estiver preenchido
   if (card.fluigResult === 'aprovado' && card.dataOC && !card.pc) {
-    if (card.tipo === 'delegada') {
-      // Delegada de SERVIÇO: detectar por delTipo OU por srvStatus preenchido
-      if (card.delTipo === 'servico' || card.srvStatus) {
+    // Serviço (qualquer tipo de SC): pula lead time e vai para execução
+    if (card.delTipo === 'servico' || card.srvStatus) {
+      if (true) {
         const status = card.srvStatus || '';
         if (status === 'concluido') {
           return { pct:100, rest:0, status:'ok', label:'Serviço concluído', fase:'srv_concluido', msg:'Serviço concluído. Providencie o recebimento da NF.' };
@@ -2049,8 +2050,8 @@ function getSLA(card) {
   // ── PC preenchido: suprimentos concluiu — monitorar FRETE ──
   if (card.pc) {
 
-    // Delegada de serviço com PC: monitorar execução (não tem frete)
-    if (card.tipo === 'delegada' && (card.delTipo === 'servico' || card.srvStatus)) {
+    // Serviço (qualquer tipo de SC): monitorar execução, sem frete
+    if (card.delTipo === 'servico' || (card.srvStatus && card.tipo !== 'emergencial')) {
       const status = card.srvStatus || '';
       if (status === 'concluido') {
         return { pct:100, rest:0, status:'ok', label:'Serviço concluído', fase:'srv_concluido', msg:'Serviço concluído. Providencie o recebimento da NF.' };
@@ -2491,10 +2492,8 @@ function selTipo(t) {
   if (rotaEm)    rotaEm.style.display    = t === 'emergencial' ? '' : 'none';
   if (secJustif) secJustif.style.display = t === 'emergencial' ? 'none' : '';
 
-  // Delegada: mostrar seletor material/serviço, ocultar analista suprimentos
+  // Analista suprimentos: ocultar para delegada (não passa pelo suprimentos)
   const analistaW = document.getElementById('analista-oc-wrap');
-  const delTipoW  = document.getElementById('delegada-tipo-wrap');
-  if (delTipoW)  delTipoW.style.display  = t === 'delegada' ? '' : 'none';
   if (analistaW) analistaW.style.display = t === 'delegada' ? 'none' : '';
 
   // Hint da OC
@@ -2505,12 +2504,7 @@ function selTipo(t) {
     else ocHint.textContent = '— início da contagem SLA do suprimentos (20 dias úteis)';
   }
 
-  // Reset tipo delegada ao trocar tipo
-  if (t !== 'delegada') {
-    curDelTipo = '';
-    ['del-mat','del-srv'].forEach(id => { const b=document.getElementById(id); if(b) b.className='fat-btn'; });
-  }
-
+  // Tipo de compra permanece ao trocar tipo de SC (é independente)
   calcSLA();
 }
 
@@ -2635,11 +2629,17 @@ function selDelTipo(t) {
   if (bMat) bMat.className = `del-tipo-btn${t==='material'?' on-mat':''}`;
   if (bSrv) bSrv.className = `del-tipo-btn${t==='servico'?' on-srv':''}`;
 
-  // Etapa 5: alterna entre frete e execução de serviço
-  const etFrete  = document.getElementById('etapa5-frete');
-  const etServico= document.getElementById('etapa5-servico');
-  if (etFrete)   etFrete.style.display   = t==='servico' ? 'none' : '';
-  if (etServico) etServico.style.display = t==='servico' ? '' : 'none';
+  // Campo 5 dinâmico: Material → frete | Serviço → execução
+  const etFrete   = document.getElementById('etapa5-frete');
+  const etServico = document.getElementById('etapa5-servico');
+  if (t === 'servico') {
+    if (etFrete)   etFrete.style.display   = 'none';
+    if (etServico) etServico.style.display = '';
+  } else {
+    // Material ou sem seleção → mostrar frete
+    if (etFrete)   etFrete.style.display   = '';
+    if (etServico) etServico.style.display = 'none';
+  }
 }
 
 function selSrvStatus(s) {
