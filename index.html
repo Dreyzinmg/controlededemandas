@@ -275,24 +275,29 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   position: fixed; inset: 0;
   background: rgba(10,25,15,0.45);
   z-index: 200; display: none;
-  align-items: center; justify-content: center;
+  align-items: flex-start; justify-content: center;
   padding: 20px; backdrop-filter: blur(3px);
+  overflow-y: auto;
 }
 .overlay.open { display: flex; }
 
 .modal {
   background: var(--white); border-radius: 11px;
   width: 100%; max-width: 680px;
-  max-height: 92vh; overflow-y: auto;
+  height: fit-content;
+  max-height: calc(100vh - 40px);
+  display: flex; flex-direction: column;
   box-shadow: 0 12px 40px rgba(0,0,0,0.18);
   border: 1px solid var(--border);
+  margin: auto;
 }
 
 .modal-hdr {
   background: linear-gradient(135deg, var(--green-dark), var(--green-main));
   padding: 18px 22px; border-radius: 11px 11px 0 0;
   display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 12px; position: sticky; top: 0; z-index: 10;
+  gap: 12px;
+  flex-shrink: 0;
 }
 .modal-hdr-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; }
 .modal-hdr-sub { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
@@ -305,12 +310,12 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 }
 .modal-x:hover { background: rgba(255,255,255,0.25); }
 
-.modal-body { padding: 20px 22px; }
+.modal-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
 .modal-foot {
   padding: 13px 22px; border-top: 1px solid var(--border);
   display: flex; justify-content: flex-end; gap: 8px;
   background: var(--bg); border-radius: 0 0 11px 11px;
-  position: sticky; bottom: 0;
+  flex-shrink: 0;
 }
 
 /* ── FORM ── */
@@ -695,6 +700,76 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   font-size: 12.5px; font-weight: 600;
   color: var(--text); margin-bottom: 8px;
 }
+
+/* ── DELEGADA: botões Material / Serviço ── */
+.del-tipo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.del-tipo-btn {
+  padding: 14px 12px;
+  border-radius: var(--r);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+
+.del-tipo-btn:hover {
+  border-color: var(--green-accent);
+  background: var(--green-light);
+}
+
+.del-tipo-btn.on-mat {
+  background: var(--green-light);
+  border-color: #a5d6a7;
+}
+
+.del-tipo-btn.on-srv {
+  background: var(--blue-lt);
+  border-color: #90caf9;
+}
+
+.del-tipo-icon { font-size: 22px; margin-bottom: 5px; }
+.del-tipo-title { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.del-tipo-hint  { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+.del-tipo-btn.on-mat .del-tipo-title { color: var(--green-main); }
+.del-tipo-btn.on-srv .del-tipo-title { color: var(--blue); }
+
+/* ── SERVIÇO DELEGADO: cards de status ── */
+.servico-status-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.srv-card {
+  padding: 13px 10px;
+  border-radius: var(--r);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.srv-card:hover { border-color: var(--green-accent); background: var(--green-light); }
+
+.srv-card.on-exec    { background: var(--yellow-lt);  border-color: #ffe082; }
+.srv-card.on-aguard  { background: var(--blue-lt);    border-color: #90caf9; }
+.srv-card.on-concluido { background: var(--green-light); border-color: #a5d6a7; }
+
+.srv-card-icon  { font-size: 20px; margin-bottom: 4px; }
+.srv-card-title { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.srv-card-sub   { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
 
 /* scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1085,6 +1160,9 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="pill" onclick="setFase(this,'aguard_contas')">Aguard. Contas</button>
     <button class="pill" onclick="setFase(this,'finalizar_receb')">Finalizar Receb.</button>
     <button class="pill" onclick="setFase(this,'recebido')">Recebido</button>
+    <button class="pill" onclick="setFase(this,'srv_exec')">Serviço em exec.</button>
+    <button class="pill" onclick="setFase(this,'srv_aguard')">Aguard. retirada</button>
+    <button class="pill" onclick="setFase(this,'srv_concluido')">Serviço concluído</button>
   </div>
 </div>
 
@@ -1167,11 +1245,19 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
           <input class="fctl" id="f-valor" placeholder="R$ 0,00" oninput="maskBRL(this)">
         </div>
         <!-- Delegada: tipo de SC (serviço ou material) -->
-        <div class="fgrp" id="delegada-tipo-wrap" style="display:none;">
+        <div class="fgrp span2" id="delegada-tipo-wrap" style="display:none;">
           <label class="flbl">Tipo de compra</label>
-          <div style="display:flex;gap:8px;">
-            <button class="fat-btn" id="del-mat" onclick="selDelTipo('material')">Material / Peça<br><span style="font-size:10px;font-weight:400;opacity:.7">Limite R$ 5 mil</span></button>
-            <button class="fat-btn" id="del-srv" onclick="selDelTipo('servico')">Serviço<br><span style="font-size:10px;font-weight:400;opacity:.7">Limite R$ 10 mil</span></button>
+          <div class="del-tipo-grid">
+            <button class="del-tipo-btn" id="del-mat" onclick="selDelTipo('material')">
+              <div class="del-tipo-icon">📦</div>
+              <div class="del-tipo-title">Material / Peça</div>
+              <div class="del-tipo-hint">Limite R$ 5 mil · inclui frete</div>
+            </button>
+            <button class="del-tipo-btn" id="del-srv" onclick="selDelTipo('servico')">
+              <div class="del-tipo-icon">🔧</div>
+              <div class="del-tipo-title">Serviço</div>
+              <div class="del-tipo-hint">Limite R$ 10 mil · sem frete</div>
+            </button>
           </div>
         </div>
       </div>
@@ -1341,10 +1427,13 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
           </div>
         </div>
 
-        <!-- Etapa 6: Frete -->
-        <div class="sla-step">
+        <!-- Etapa 5: Frete / Execução do Serviço -->
+        <div class="sla-step" id="step-etapa5">
           <div class="sla-step-num">5</div>
           <div class="sla-step-body">
+
+            <!-- FRETE (material ou normal/urgente) -->
+            <div id="etapa5-frete">
             <div class="sla-step-label">Tipo de Frete</div>
 
             <!-- Cards de seleção -->
@@ -1440,6 +1529,32 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
               </div>
               <div id="frete-status-ded" style="display:none;margin-top:8px;"></div>
             </div>
+
+          </div>
+            </div><!-- /etapa5-frete -->
+
+            <!-- EXECUÇÃO DE SERVIÇO (delegada serviço) -->
+            <div id="etapa5-servico" style="display:none;">
+              <div class="sla-step-label">Execução do Serviço <span class="sla-step-hint">— 20 dias úteis a partir do pedido aprovado</span></div>
+              <div class="servico-status-cards">
+                <div class="srv-card" id="srv-exec" onclick="selSrvStatus('execucao')">
+                  <div class="srv-card-icon">⚙️</div>
+                  <div class="srv-card-title">Em execução</div>
+                  <div class="srv-card-sub">prestador trabalhando no item</div>
+                </div>
+                <div class="srv-card" id="srv-aguard" onclick="selSrvStatus('aguardando')">
+                  <div class="srv-card-icon">⏳</div>
+                  <div class="srv-card-title">Aguardando retirada</div>
+                  <div class="srv-card-sub">serviço concluído, buscar o item</div>
+                </div>
+                <div class="srv-card" id="srv-concluido" onclick="selSrvStatus('concluido')">
+                  <div class="srv-card-icon">✅</div>
+                  <div class="srv-card-title">Serviço concluído</div>
+                  <div class="srv-card-sub">item retornado à unidade</div>
+                </div>
+              </div>
+              <div id="srv-prazo-status" class="sla-note" style="display:none;margin-top:10px;"></div>
+            </div><!-- /etapa5-servico -->
 
           </div>
         </div>
@@ -1596,7 +1711,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
           </div>
         </div>
       </div>
-    </div>
 
   </div><!-- /modal-body -->
 
@@ -1606,7 +1720,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="btn btn-concluir" id="btn-concluir" onclick="concluirSC()" style="display:none">Concluir SC</button>
     <button class="btn btn-green" onclick="save()">Salvar SC</button>
   </div>
-</div>
 </div>
 
 <div class="toasts" id="toasts"></div>
@@ -1900,7 +2013,28 @@ function getSLA(card) {
   // Só conta enquanto PC NÃO estiver preenchido
   if (card.fluigResult === 'aprovado' && card.dataOC && !card.pc) {
     if (card.tipo === 'delegada') {
-      // Delegada não tem lead time do suprimentos — só registra OC/PC
+      // Delegada de SERVIÇO: contar 20du a partir do PC
+      if (card.delTipo === 'servico') {
+        const status = card.srvStatus || '';
+        if (status === 'concluido') {
+          return { pct:100, rest:0, status:'ok', label:'Serviço concluído', fase:'srv_concluido', msg:'Serviço concluído. Providencie o recebimento da NF.' };
+        }
+        if (status === 'aguardando') {
+          return { pct:90, rest:null, status:'watch', label:'Aguard. retirada', fase:'srv_aguard', msg:'Serviço pronto — providencie a retirada do item no prestador.' };
+        }
+        // Em execução ou sem status: contar 20du a partir da data do PC
+        if (card.pc && card.dataPC) {
+          const el   = workDaysElapsed(card.dataPC, TODAY);
+          const rest = 20 - el;
+          const pct  = Math.min(100, Math.round(el/20*100));
+          if (rest < 0)  return { pct:100, rest, status:'over', label:`${Math.abs(rest)}du vencido`, fase:'srv_exec', msg:`Prazo de execução vencido há ${Math.abs(rest)} dia(s) útil(is). Acione o prestador.` };
+          if (rest === 0) return { pct:95, rest:0, status:'risk', label:'Vence hoje', fase:'srv_exec', msg:'Último dia útil do prazo de execução — acione o prestador.' };
+          const st = pct >= 75 ? 'risk' : pct >= 50 ? 'watch' : 'ok';
+          return { pct, rest, status:st, label:`${rest}du p/ serviço`, fase:'srv_exec', msg:`Serviço em execução — ${rest} dia(s) útil(is) restantes dos 20du.` };
+        }
+        return { pct:20, rest:null, status:'ok', label:'Aguard. PC serviço', fase:'srv_exec', msg:'Preencha o Pedido de Compra para iniciar a contagem dos 20 dias úteis de execução.' };
+      }
+      // Delegada de MATERIAL: sem lead time suprimentos — aguarda PC
       return { pct:50, rest:null, status:'ok', label:'Aguard. PC', fase:'suprimentos', msg:'SC Delegada: aguardando geração do Pedido de Compra.' };
     }
     const el   = workDaysElapsed(card.dataOC, TODAY);
@@ -2063,6 +2197,7 @@ function render() {
           emergencial:'Emergencial', inicio:'Início',
           aguard_nf:'Aguard. NF', aguard_contas:'Aguard. Contas',
           finalizar_receb:'Finalizar Receb.', recebido:'Recebido ✓',
+          srv_exec:'Serviço em exec.', srv_aguard:'Aguard. retirada', srv_concluido:'Serviço concluído',
         }[s.fase] || '';
         const card = document.createElement('div');
         card.className = `card ${s.status}${c.rascunho ? ' rascunho' : ''}`;
@@ -2201,6 +2336,8 @@ function openEdit(id) {
   const frRe  = document.getElementById('f-fluig-reaberto'); if(frRe) frRe.value = c.fluigReaberto||'';
   const frMot = document.getElementById('f-reprov-motivo');  if(frMot) frMot.value = c.reprovMotivo||'';
   curDelTipo = c.delTipo||''; if(c.delTipo) selDelTipo(c.delTipo);
+  curSrvStatus = c.srvStatus||''; if(c.srvStatus) loadSrvStatus(c.srvStatus);
+  // selSrvStatus atualiza o painel via getSLA no render
   if (c.fluigResult) loadFluigResult(c.fluigResult);
   if (c.frete) loadFrete(c.frete);
   // Recalcular painéis de previsão de entrega
@@ -2468,18 +2605,138 @@ function maskBRL(el) {
   el.value = 'R$ ' + v.replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
 }
 
-// ── TIPO DELEGADA (serviço / material) ────────────────────
-let curDelTipo = '';
+let curSrvStatus = '';
+
 function selDelTipo(t) {
   curDelTipo = t;
-  ['material','servico'].forEach(x => {
-    const b = document.getElementById('del-' + (x==='material'?'mat':'srv'));
-    if (b) b.className = `fat-btn${x===t?' on':''}`;
-  });
-  // Na delegada de serviço: ocultar etapa de frete (serviço não tem frete)
-  const stepPC = document.getElementById('step-pc-wrap');
-  if (stepPC) stepPC.style.display = t==='servico' ? 'none' : '';
+  // Botões visuais
+  const bMat = document.getElementById('del-mat');
+  const bSrv = document.getElementById('del-srv');
+  if (bMat) bMat.className = `del-tipo-btn${t==='material'?' on-mat':''}`;
+  if (bSrv) bSrv.className = `del-tipo-btn${t==='servico'?' on-srv':''}`;
+
+  // Etapa 5: alterna entre frete e execução de serviço
+  const etFrete  = document.getElementById('etapa5-frete');
+  const etServico= document.getElementById('etapa5-servico');
+  if (etFrete)   etFrete.style.display   = t==='servico' ? 'none' : '';
+  if (etServico) etServico.style.display = t==='servico' ? '' : 'none';
 }
+
+function selSrvStatus(s) {
+  // Mapeamento: valor salvo → sufixo do id e classe CSS
+  const MAP = { execucao:'exec', aguardando:'aguard', concluido:'concluido' };
+
+  // Toggle: se já selecionado, deseleciona
+  if (curSrvStatus === s) {
+    curSrvStatus = '';
+    Object.values(MAP).forEach(x => {
+      const b = document.getElementById('srv-'+x);
+      if (b) b.className = 'srv-card';
+    });
+    // Atualizar painel de prazo
+    const el = document.getElementById('srv-prazo-status');
+    if (el) el.style.display = 'none';
+    return;
+  }
+
+  curSrvStatus = s;
+  const sufixo = MAP[s] || s;
+  Object.entries(MAP).forEach(([val, suf]) => {
+    const b = document.getElementById('srv-'+suf);
+    if (b) b.className = `srv-card${val===s?' on-'+suf:''}`;
+  });
+
+  // Mostrar insight de prazo no painel
+  updateSrvPrazoPanel();
+}
+
+function loadSrvStatus(s) {
+  const MAP = { execucao:'exec', aguardando:'aguard', concluido:'concluido' };
+  curSrvStatus = s;
+  Object.entries(MAP).forEach(([val, suf]) => {
+    const b = document.getElementById('srv-'+suf);
+    if (b) b.className = `srv-card${val===s?' on-'+suf:''}`;
+  });
+  updateSrvPrazoPanel();
+}
+
+function updateSrvPrazoPanel() {
+  // Buscar o card atual para calcular o prazo
+  if (editId === null) return;
+  const c = cards.find(x => String(x.id) === String(editId));
+  const el = document.getElementById('srv-prazo-status');
+  if (!el) return;
+
+  if (curSrvStatus === 'concluido') {
+    el.className = 'sla-note n-ok'; el.style.display = 'block';
+    el.textContent = '✓ Serviço concluído — providencie o recebimento da Nota Fiscal.';
+    return;
+  }
+  if (curSrvStatus === 'aguardando') {
+    el.className = 'sla-note n-warn'; el.style.display = 'block';
+    el.textContent = 'Serviço pronto no prestador — providencie a retirada do item.';
+    return;
+  }
+  // Em execução: calcular dias úteis a partir do dataPC
+  const dataPC = c?.dataPC || (document.getElementById('f-data-pc')||{}).value || '';
+  if (!dataPC) {
+    el.className = 'sla-note n-ok'; el.style.display = 'block';
+    el.textContent = 'Serviço em execução. Preencha a Data do Pedido para monitorar o prazo.';
+    return;
+  }
+  const el_dias = workDaysElapsed(dataPC, TODAY);
+  const rest    = 20 - el_dias;
+  const pct     = Math.min(100, Math.round(el_dias/20*100));
+  el.style.display = 'block';
+  if (rest < 0) {
+    el.className = 'sla-note n-err';
+    el.textContent = `Prazo de execução vencido há ${Math.abs(rest)} dia(s) útil(is). Acione o prestador imediatamente.`;
+  } else if (rest === 0) {
+    el.className = 'sla-note n-warn';
+    el.textContent = 'Último dia útil do prazo de execução — acione o prestador hoje.';
+  } else if (pct >= 75) {
+    el.className = 'sla-note n-warn';
+    el.textContent = `Em risco: ${rest} dia(s) útil(is) restantes dos 20du. Confirme o andamento com o prestador.`;
+  } else {
+    el.className = 'sla-note n-ok';
+    el.textContent = `Serviço em execução — ${rest} dia(s) útil(is) restantes dos 20 dias úteis.`;
+  }
+}
+
+function calcSrvPrazo() {
+  // Sem campos de data — painel calculado pelo getSLA
+  return;
+  const previsao  = '';
+  const conclusao = '';
+  const el = document.getElementById('srv-prazo-status');
+  if (!el) return;
+
+  if (conclusao) {
+    el.style.display = 'block';
+    el.className = 'sla-note n-ok';
+    el.textContent = `Serviço concluído em ${conclusao.split('-').reverse().join('/')}.`;
+    return;
+  }
+  if (!previsao) { el.style.display = 'none'; return; }
+
+  const diff = Math.round((new Date(previsao+'T00:00:00') - TODAY) / 86400000);
+  el.style.display = 'block';
+  if (diff < 0) {
+    el.className = 'sla-note n-err';
+    el.textContent = `Serviço atrasado — previsão era ${previsao.split('-').reverse().join('/')} (${Math.abs(diff)} dia(s) vencido(s)). Acione o prestador.`;
+  } else if (diff === 0) {
+    el.className = 'sla-note n-warn';
+    el.textContent = 'Conclusão do serviço prevista para hoje.';
+  } else if (diff <= 3) {
+    el.className = 'sla-note n-warn';
+    el.textContent = `Serviço deve ser concluído em ${diff} dia(s) — ${previsao.split('-').reverse().join('/')}.`;
+  } else {
+    el.className = 'sla-note n-ok';
+    el.textContent = `Serviço em execução — conclusão prevista em ${diff} dia(s).`;
+  }
+}
+
+// ── TIPO DELEGADA original removido — substituído acima ───
 
 // ── CARREGAR estado salvo (sem validação) ─────────────────
 function loadFluigResult(r) {
@@ -2907,6 +3164,8 @@ function collectFormData() {
     resp: document.getElementById('f-resp').value,
     forn: document.getElementById('f-forn').value,
     delTipo: curDelTipo,
+    srvStatus:   curSrvStatus,
+
     valor: document.getElementById('f-valor').value,
     abertura: (editId !== null && cards.find(x=>String(x.id)===String(editId))?.abertura) || fmt(TODAY),
     fluig: document.getElementById('f-fluig').value,
