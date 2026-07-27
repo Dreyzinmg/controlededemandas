@@ -2013,8 +2013,8 @@ function getSLA(card) {
   // Só conta enquanto PC NÃO estiver preenchido
   if (card.fluigResult === 'aprovado' && card.dataOC && !card.pc) {
     if (card.tipo === 'delegada') {
-      // Delegada de SERVIÇO: contar 20du a partir do PC
-      if (card.delTipo === 'servico') {
+      // Delegada de SERVIÇO: detectar por delTipo OU por srvStatus preenchido
+      if (card.delTipo === 'servico' || card.srvStatus) {
         const status = card.srvStatus || '';
         if (status === 'concluido') {
           return { pct:100, rest:0, status:'ok', label:'Serviço concluído', fase:'srv_concluido', msg:'Serviço concluído. Providencie o recebimento da NF.' };
@@ -2049,7 +2049,27 @@ function getSLA(card) {
   // ── PC preenchido: suprimentos concluiu — monitorar FRETE ──
   if (card.pc) {
 
-    // Frete ainda não definido — 2du para informar
+    // Delegada de serviço com PC: monitorar execução (não tem frete)
+    if (card.tipo === 'delegada' && (card.delTipo === 'servico' || card.srvStatus)) {
+      const status = card.srvStatus || '';
+      if (status === 'concluido') {
+        return { pct:100, rest:0, status:'ok', label:'Serviço concluído', fase:'srv_concluido', msg:'Serviço concluído. Providencie o recebimento da NF.' };
+      }
+      if (status === 'aguardando') {
+        return { pct:90, rest:null, status:'watch', label:'Aguard. retirada', fase:'srv_aguard', msg:'Serviço pronto — providencie a retirada do item no prestador.' };
+      }
+      // Em execução: contar 20du a partir do dataPC
+      if (card.dataPC) {
+        const el   = workDaysElapsed(card.dataPC, TODAY);
+        const rest = 20 - el;
+        const pct  = Math.min(100, Math.round(el/20*100));
+        if (rest < 0)  return { pct:100, rest, status:'over', label:`${Math.abs(rest)}du vencido`, fase:'srv_exec', msg:`Prazo de execução vencido há ${Math.abs(rest)} dia(s) útil(is). Acione o prestador.` };
+        if (rest === 0) return { pct:95, rest:0, status:'risk', label:'Vence hoje', fase:'srv_exec', msg:'Último dia útil do prazo — acione o prestador hoje.' };
+        const st = pct >= 75 ? 'risk' : pct >= 50 ? 'watch' : 'ok';
+        return { pct, rest, status:st, label:`${rest}du p/ serviço`, fase:'srv_exec', msg:`Serviço em execução — ${rest} dia(s) útil(is) restantes.` };
+      }
+      return { pct:40, rest:null, status:'ok', label:'Serviço em exec.', fase:'srv_exec', msg:'Pedido aprovado — serviço em execução. Selecione o status da execução.' };
+    }
     if (!card.frete) {
       // Usa dataOC como base aproximada para o PC (já que não temos data do PC)
       const elPC = card.dataOC ? Math.max(0, workDaysElapsed(card.dataOC, TODAY) - leadSupr) : 0;
