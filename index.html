@@ -2073,7 +2073,8 @@ function getSLA(card) {
     }
     if (!card.frete) {
       // Usa dataOC como base aproximada para o PC (já que não temos data do PC)
-      const elPC = card.dataOC ? Math.max(0, workDaysElapsed(card.dataOC, TODAY) - leadSupr) : 0;
+      const elPC = card.dataPC ? workDaysElapsed(card.dataPC, TODAY) : 0;
+      if (!card.dataPC) return { pct:0, rest:null, status:'watch', label:'Def. frete', fase:'frete_pendente', msg:'Informe a data do Pedido de Compra para monitorar o prazo do frete.' };
       if (elPC > 2) return { pct:100, rest:-(elPC-2), status:'over', label:`${elPC-2}d s/ frete`, fase:'frete_pendente', msg:'Informe o tipo de frete (CIF, FOB ou Dedicado) — prazo de 2 dias úteis vencido.' };
       const restF = 2 - elPC;
       return { pct:Math.round(elPC/2*100), rest:restF, status:restF<=0?'risk':'watch', label:`${restF}d p/ frete`, fase:'frete_pendente', msg:`Defina o tipo de frete em até ${restF} dia(s) útil(is).` };
@@ -2082,7 +2083,7 @@ function getSLA(card) {
     // ── CIF: 5du para informar rastreio ──
     if (card.frete === 'CIF') {
       if (!card.freteObs) {
-        const elPC = card.dataOC ? Math.max(0, workDaysElapsed(card.dataOC, TODAY) - leadSupr) : 0;
+        const elPC = card.dataPC ? workDaysElapsed(card.dataPC, TODAY) : 0;
         const restR = 5 - elPC;
         if (restR < 0) return { pct:100, rest:restR, status:'over', label:`${Math.abs(restR)}d s/ rastreio`, fase:'cif_rastreio', msg:'Informe transportadora e código de rastreio — prazo vencido.' };
         const st = restR <= 1 ? 'risk' : restR <= 3 ? 'watch' : 'ok';
@@ -2125,7 +2126,7 @@ function getSLA(card) {
 
       // FOB Fase 1: abrir Fluig do frete (3du após PC)
       if (!card.fluigFOB) {
-        const elPC = card.dataOC ? Math.max(0, workDaysElapsed(card.dataOC, TODAY) - leadSupr) : 0;
+        const elPC = card.dataPC ? workDaysElapsed(card.dataPC, TODAY) : 0;
         const rest = 3 - elPC;
         if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}d s/ Fluig frete`, fase:'fob_fluig', msg:`Abra o Fluig do frete FOB — prazo vencido há ${Math.abs(rest)} dia(s) útil(is).` };
         return { pct:Math.round(elPC/3*100), rest, status:rest<=0?'risk':elPC>=2?'watch':'ok', label:`${rest}du p/ Fluig frete`, fase:'fob_fluig', msg:`Abra o Fluig do frete FOB em até ${rest} dia(s) útil(is).` };
