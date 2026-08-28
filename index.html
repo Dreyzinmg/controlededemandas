@@ -1175,10 +1175,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="pill" onclick="setFase(this,'cif_rastreio')">CIF Rastreio</button>
     <button class="pill" onclick="setFase(this,'cif_entrega')">CIF Entrega</button>
     <button class="pill" onclick="setFase(this,'fob_fluig,fob_gerente,fob_supr,fob_pc,fob_ok')">FOB</button>
-    <button class="pill" onclick="setFase(this,'aguard_nf')">Aguard. NF</button>
-    <button class="pill" onclick="setFase(this,'aguard_contas')">Aguard. Contas</button>
-    <button class="pill" onclick="setFase(this,'finalizar_receb')">Finalizar Receb.</button>
-    <button class="pill" onclick="setFase(this,'recebido')">Recebido</button>
+    <button class="pill" onclick="setFase(this,'aguard_nf')">Aguard. NF Fluig</button>
+    <button class="pill" onclick="setFase(this,'aguard_fiscal')">Aguard. Fiscal</button>
+    <button class="pill" onclick="setFase(this,'aguard_chegada')">Aguard. Chegada</button>
+    <button class="pill" onclick="setFase(this,'receb_parcial')">Receb. Parcial</button>
+    <button class="pill" onclick="setFase(this,'recebido')">Recebido Total</button>
     <button class="pill" onclick="setFase(this,'srv_exec')">Serviço em exec.</button>
     <button class="pill" onclick="setFase(this,'srv_aguard')">Aguard. retirada</button>
     <button class="pill" onclick="setFase(this,'srv_concluido')">Serviço concluído</button>
@@ -1658,25 +1659,66 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
                 <div><div class="receb-card-title">Chegada do material na unidade</div><div class="receb-card-hint">após retorno do fiscal</div></div>
               </div>
               <div class="receb-card-body">
-                <div class="receb-chegada-row" style="margin-bottom:8px;">
+                <div class="receb-chegada-row" style="margin-bottom:12px;">
                   <div class="fgrp"><label class="flbl">Data de chegada</label><input type="date" class="fctl" id="f-chegada" oninput="calcReceb()"></div>
-                  <label class="receb-check-label"><input type="checkbox" id="f-chegou" onchange="calcReceb()" style="accent-color:var(--green-accent);"><span>Material confirmado na unidade</span></label>
                 </div>
+                <!-- Tipo de recebimento -->
+                <div class="del-tipo-grid" id="receb-tipo-wrap" style="display:none;">
+                  <button class="del-tipo-btn" id="receb-total" onclick="selRecebTipo('total')">
+                    <div class="del-tipo-icon">✅</div>
+                    <div class="del-tipo-title">Recebimento total</div>
+                    <div class="del-tipo-hint">material completo — pode concluir</div>
+                  </button>
+                  <button class="del-tipo-btn" id="receb-parcial" onclick="selRecebTipo('parcial')">
+                    <div class="del-tipo-icon">📦</div>
+                    <div class="del-tipo-title">Recebimento parcial</div>
+                    <div class="del-tipo-hint">restante: 15 dias úteis p/ fornecedor</div>
+                  </button>
+                </div>
+                <!-- SLA parcial -->
+                <div id="sla-parcial" class="sla-note" style="display:none;margin-top:8px;"></div>
               </div>
             </div>
             <div class="receb-card" id="receb-devol-card" style="display:none;margin-top:8px;">
               <div class="receb-card-hdr">
                 <div class="receb-step-dot" id="rdot-devol"></div>
-                <div><div class="receb-card-title">Devolução final ao fiscal</div><div class="receb-card-hint">até 3 dias úteis — encerra o fluxo</div></div>
+                <div><div class="receb-card-title" id="devol-title">Devolução da NF ao fiscal</div><div class="receb-card-hint" id="devol-hint">até 3 dias úteis — aguarda o restante</div></div>
               </div>
               <div class="receb-card-body">
                 <div class="g2">
-                  <div class="fgrp"><label class="flbl">Data de devolução ao fiscal</label><input type="date" class="fctl" id="f-nf-devol" oninput="calcReceb()"></div>
-                  <div class="fgrp" style="padding-top:22px;">
+                  <div class="fgrp"><label class="flbl" id="devol-label">Data de devolução ao fiscal</label><input type="date" class="fctl" id="f-nf-devol" oninput="calcReceb()"></div>
+                  <div class="fgrp" id="devol-encerra-wrap" style="padding-top:22px;">
                     <label class="receb-check-label"><input type="checkbox" id="f-receb-ok" onchange="calcReceb()" style="accent-color:var(--green-accent);"><span>Fluxo encerrado — SC pode ser concluída</span></label>
                   </div>
                 </div>
                 <div id="sla-devol" class="sla-note" style="display:none;margin-top:8px;"></div>
+              </div>
+            </div>
+
+            <!-- PARCIAL: aguardando restante + 2ª NF -->
+            <div class="receb-card" id="receb-parcial-restante" style="display:none;margin-top:8px;">
+              <div class="receb-card-hdr">
+                <div class="receb-step-dot" id="rdot-restante"></div>
+                <div><div class="receb-card-title">Restante da carga + 2ª NF</div><div class="receb-card-hint">fornecedor emite nova NF para o restante</div></div>
+              </div>
+              <div class="receb-card-body">
+                <div class="g2">
+                  <div class="fgrp"><label class="flbl">Data de chegada do restante</label><input type="date" class="fctl" id="f-chegada2" oninput="calcReceb()"></div>
+                  <div class="fgrp"><label class="flbl">Nº da 2ª Nota Fiscal</label><input class="fctl" id="f-nf2-numero" placeholder="Ex: 1614799"></div>
+                  <div class="fgrp"><label class="flbl">Data de envio ao fiscal (2ª NF)</label><input type="date" class="fctl" id="f-fiscal2-envio" oninput="calcReceb()"></div>
+                  <div class="fgrp"><label class="flbl">Data de retorno do fiscal (2ª NF)</label><input type="date" class="fctl" id="f-fiscal2-retorno" oninput="calcReceb()"></div>
+                </div>
+                <div id="sla-parcial2" class="sla-note" style="display:none;margin-top:8px;"></div>
+                <!-- Devolução final da 2ª NF -->
+                <div id="devol2-wrap" style="display:none;margin-top:10px;">
+                  <div class="g2">
+                    <div class="fgrp"><label class="flbl">Data de devolução final ao fiscal</label><input type="date" class="fctl" id="f-nf2-devol" oninput="calcReceb()"></div>
+                    <div class="fgrp" style="padding-top:22px;">
+                      <label class="receb-check-label"><input type="checkbox" id="f-receb-ok2" onchange="calcReceb()" style="accent-color:var(--green-accent);"><span>Fluxo encerrado — SC pode ser concluída</span></label>
+                    </div>
+                  </div>
+                  <div id="sla-devol2" class="sla-note" style="display:none;margin-top:8px;"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1990,19 +2032,44 @@ function getSLA(card) {
       const st = pct>=66?'risk':pct>=33?'watch':'ok';
       return { pct, rest, status:st, label:`${rest}du p/ NF`, fase:'aguard_nf', msg:`Material chegou — aguardando NF. ${rest} dia(s) útil(is) restantes.` };
     }
-    if (!card.nfDevol) {
-      const el = workDaysElapsed(card.nfReceb, TODAY);
-      const rest = 5 - el;
-      const pct = Math.min(100, Math.round(el/5*100));
-      if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}d s/ contas`, fase:'aguard_contas', msg:`NF com o time de contas há ${Math.abs(rest)} dia(s) além do prazo. Cobre a devolução.` };
-      if (rest===0) return { pct:90, rest:0, status:'risk', label:'Contas vence hoje', fase:'aguard_contas', msg:'Último dia útil para o time de contas devolver a NF.' };
-      const st = pct>=60?'watch':'ok';
-      return { pct, rest, status:st, label:`${rest}du p/ contas`, fase:'aguard_contas', msg:`NF com ${card.contasResp||'time de contas'} — ${rest} dia(s) útil(is) restantes.` };
+    // Aguardando devolução final ao fiscal após chegada (3du)
+    if (!card.nfDevol && card.chegada) {
+      const el   = workDaysElapsed(card.chegada, TODAY);
+      const rest = 3 - el;
+      const pct  = Math.min(100, Math.round(el/3*100));
+      if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}du s/ fiscal`, fase:'aguard_fiscal', msg:`Devolver ao fiscal — ${Math.abs(rest)} dia(s) útil(is) vencido(s).` };
+      if (rest===0) return { pct:90, rest:0, status:'risk', label:'Dev. fiscal hoje', fase:'aguard_fiscal', msg:'Último dia útil para devolver ao fiscal.' };
+      const st = pct>=66?'risk':pct>=33?'watch':'ok';
+      return { pct, rest, status:st, label:`${rest}du p/ fiscal`, fase:'aguard_fiscal', msg:`Devolva ao fiscal em até ${rest} dia(s) útil(is).` };
+    }
+    // Recebimento parcial: 15du para o restante
+    // Parcial com 2ª NF já em processo: fluxo de encerramento
+    if (card.recebTipo === 'parcial' && card.recebOk2) {
+      return { pct:100, rest:0, status:'ok', label:'Recebido ✓', fase:'recebido', msg:'Processo concluído — ambas as NFs finalizadas.' };
+    }
+    if (card.recebTipo === 'parcial' && card.fiscal2Retorno) {
+      return { pct:95, rest:0, status:'ok', label:'Dev. 2ª NF', fase:'aguard_fiscal', msg:'Fiscal devolveu a 2ª NF — finalize o recebimento.' };
+    }
+    if (card.recebTipo === 'parcial' && card.fiscal2Envio) {
+      const el=workDaysElapsed(card.fiscal2Envio,TODAY); const rest=3-el;
+      if (rest<0) return {pct:100,rest,status:'over',label:`${Math.abs(rest)}du s/ fiscal 2`,fase:'aguard_fiscal',msg:`Fiscal não devolveu a 2ª NF — ${Math.abs(rest)}du vencido.`};
+      return {pct:Math.round((3-rest)/3*100),rest,status:rest<=0?'risk':'watch',label:`${rest}du fiscal 2`,fase:'aguard_fiscal',msg:`Aguardando retorno do fiscal para a 2ª NF.`};
+    }
+    if (card.recebTipo === 'parcial' && card.nfDevol) {
+      return { pct:60, rest:null, status:'watch', label:'Aguard. restante', fase:'receb_parcial', msg:'1ª NF devolvida — aguardando chegada do restante da carga.' };
+    }
+    if (card.recebTipo === 'parcial' && card.chegada) {
+      const el   = workDaysElapsed(card.chegada, TODAY);
+      const rest = 15 - el;
+      const pct  = Math.min(100, Math.round(el/15*100));
+      if (rest < 0) return { pct:100, rest, status:'over', label:`${Math.abs(rest)}du s/ restante`, fase:'receb_parcial', msg:`Prazo para o restante vencido há ${Math.abs(rest)} dia(s). Cobre o fornecedor.` };
+      const st = pct>=66?'risk':pct>=33?'watch':'ok';
+      return { pct, rest, status:st, label:`${rest}du restante`, fase:'receb_parcial', msg:`Recebimento parcial — fornecedor tem ${rest} dia(s) útil(is) para enviar o restante.` };
     }
     if (!card.recebOk) {
-      return { pct:95, rest:0, status:'ok', label:'Finalizar receb.', fase:'finalizar_receb', msg:'NF devolvida pelo time de contas. Finalize o recebimento.' };
+      return { pct:90, rest:0, status:'ok', label:'Dev. ao fiscal', fase:'aguard_fiscal', msg:'Material recebido. Devolva a NF ao fiscal para encerrar.' };
     }
-    return { pct:100, rest:0, status:'ok', label:'Recebido ✓', fase:'recebido', msg:'Processo concluído — material recebido e NF finalizada.' };
+    return { pct:100, rest:0, status:'ok', label:'Recebido ✓', fase:'recebido', msg:'Processo concluído — material recebido totalmente e NF finalizada.' };
   }
 
   const leadSupr = card.tipo === 'urgente' ? 10 : 20;
@@ -2246,7 +2313,7 @@ function render() {
           fob_pc:'FOB — Aguard. PC', fob_ok:'FOB — Frete OK',
           emergencial:'Emergencial', inicio:'Início',
           aguard_nf:'Aguard. NF', aguard_contas:'Aguard. Contas',
-          finalizar_receb:'Finalizar Receb.', recebido:'Recebido ✓',
+          aguard_fiscal:'Dev. ao fiscal', receb_parcial:'Receb. parcial', recebido:'Recebido ✓',
           srv_exec:'Serviço em exec.', srv_aguard:'Aguard. retirada', srv_concluido:'Serviço concluído',
         }[s.fase] || '';
         const card = document.createElement('div');
@@ -2371,12 +2438,18 @@ function openEdit(id) {
   setV('f-frete-valor',    c.freteValor);
   setV('f-frete-prazo',    c.fretePrazo);
   setV('f-chegada',        c.chegada);
-  setC('f-chegou',         c.chegou);
+  curRecebTipo = c.recebTipo||''; if(c.recebTipo) selRecebTipo(c.recebTipo);
   setV('f-nf-receb',       c.nfReceb);
   setV('f-nf-numero',      c.nfNumero);
   setV('f-contas-resp',    c.contasResp);
   setV('f-nf-devol',       c.nfDevol);
-  setC('f-receb-ok',       c.recebOk);
+  setC('f-receb-ok',  c.recebOk);
+  setV('f-chegada2',     c.chegada2);
+  setV('f-nf2-numero',   c.nf2Numero);
+  setV('f-fiscal2-envio',c.fiscal2Envio);
+  setV('f-fiscal2-retorno',c.fiscal2Retorno);
+  setV('f-nf2-devol',    c.nf2Devol);
+  setC('f-receb-ok2',    c.recebOk2);
   calcReceb();
   // Atualizar status de prazo dos fretes ao abrir card
   ['cif','fob','ded'].forEach(t => calcPrazoFrete(t));
@@ -2546,6 +2619,23 @@ function selFat(f) {
 }
 
 // ── CALC SLA ──────────────────────────────────────────────
+// ── RECEBIMENTO TIPO (total / parcial) ───────────────────
+let curRecebTipo = '';
+
+function selRecebTipo(t) {
+  if (curRecebTipo === t) {
+    curRecebTipo = '';
+    ['total','parcial'].forEach(x => { const b=document.getElementById('receb-'+x); if(b) b.className='del-tipo-btn'; });
+    const sp = document.getElementById('sla-parcial'); if(sp) sp.style.display='none';
+    const dc = document.getElementById('receb-devol-card'); if(dc) dc.style.display='none';
+    return;
+  }
+  curRecebTipo = t;
+  const bT = document.getElementById('receb-total');   if(bT) bT.className=`del-tipo-btn${t==='total'?' on-mat':''}`;
+  const bP = document.getElementById('receb-parcial'); if(bP) bP.className=`del-tipo-btn${t==='parcial'?' on-srv':''}`;
+  calcReceb();
+}
+
 // ── ENTREGA (pronta / fabricação) ────────────────────────
 let curEntrega = '';
 
@@ -2631,31 +2721,103 @@ function calcReceb() {
   if (c8) c8.style.display = fiscalRetorno ? 'flex' : 'none';
 
   if (fiscalRetorno) {
-    const dotCheg  = document.getElementById('rdot-chegada');
-    const devolCard = document.getElementById('receb-devol-card');
-    if (dotCheg) dotCheg.className = `receb-step-dot ${chegou?'done':''}`;
-    if (devolCard) devolCard.style.display = chegou ? 'block' : 'none';
+    const dotCheg    = document.getElementById('rdot-chegada');
+    const tipoWrap   = document.getElementById('receb-tipo-wrap');
+    const devolCard  = document.getElementById('receb-devol-card');
+    const slaParcial = document.getElementById('sla-parcial');
+    const chegada    = (document.getElementById('f-chegada')||{}).value||'';
 
-    if (chegou) {
+    if (dotCheg) dotCheg.className = `receb-step-dot ${chegada?'active':''}`;
+    if (tipoWrap) tipoWrap.style.display = chegada ? 'grid' : 'none';
+
+    // Parcial: 15du para o restante da carga
+    if (curRecebTipo === 'parcial' && chegada && slaParcial) {
+      const el   = workDaysElapsed(chegada, TODAY);
+      const rest = 15 - el;
+      const pct  = Math.min(100, Math.round(el/15*100));
+      slaParcial.style.display = 'block';
+      if (rest < 0) { slaParcial.className='sla-note n-err'; slaParcial.textContent=`Prazo do restante vencido há ${Math.abs(rest)} dia(s) útil(is). Cobre o fornecedor.`; }
+      else if (rest===0) { slaParcial.className='sla-note n-warn'; slaParcial.textContent='Último dia útil para o fornecedor enviar o restante da carga.'; }
+      else { slaParcial.className=pct>=60?'sla-note n-warn':'sla-note n-ok'; slaParcial.textContent=`Fornecedor tem ${rest} dia(s) útil(is) para enviar o restante da carga.`; }
+    } else if (slaParcial) {
+      slaParcial.style.display = 'none';
+    }
+
+    // TOTAL: mostrar devolução ao fiscal (encerra)
+    if (devolCard) {
+      devolCard.style.display = chegada ? 'block' : 'none';
+      const titleEl = document.getElementById('devol-title');
+      const hintEl  = document.getElementById('devol-hint');
+      const encWrap = document.getElementById('devol-encerra-wrap');
+      if (curRecebTipo === 'parcial') {
+        if (titleEl) titleEl.textContent = 'Devolução da 1ª NF ao fiscal';
+        if (hintEl)  hintEl.textContent  = 'até 3 dias úteis — NF parcial';
+        if (encWrap) encWrap.style.display = 'none'; // não encerra ainda
+      } else {
+        if (titleEl) titleEl.textContent = 'Devolução final ao fiscal';
+        if (hintEl)  hintEl.textContent  = 'até 3 dias úteis — encerra o fluxo';
+        if (encWrap) encWrap.style.display = '';
+      }
+    }
+
+    if (chegada) {
       const slaDevol = document.getElementById('sla-devol');
       const dotDevol = document.getElementById('rdot-devol');
-      const dataBase = (document.getElementById('f-chegada')||{}).value || fiscalRetorno;
-      if (recebOk) {
+      const recebOk2 = document.getElementById('f-receb-ok')?.checked;
+      if (recebOk2 && curRecebTipo === 'total') {
         if (dotDevol) dotDevol.className = 'receb-step-dot done';
         if (slaDevol) { slaDevol.className='sla-note n-ok'; slaDevol.style.display='block'; slaDevol.textContent='✓ Fluxo encerrado. SC pode ser concluída.'; }
       } else if (nfDevol) {
         if (dotDevol) dotDevol.className = 'receb-step-dot done';
         if (slaDevol) { slaDevol.className='sla-note n-ok'; slaDevol.style.display='block'; slaDevol.textContent=`✓ NF devolvida ao fiscal em ${nfDevol.split('-').reverse().join('/')}.`; }
-      } else if (dataBase) {
-        const el   = workDaysElapsed(dataBase, TODAY);
+      } else {
+        const el   = workDaysElapsed(chegada, TODAY);
         const rest = 3 - el;
         if (dotDevol) dotDevol.className = `receb-step-dot ${rest<0?'late':'active'}`;
         if (slaDevol) {
           slaDevol.style.display = 'block';
-          if (rest < 0) { slaDevol.className='sla-note n-err'; slaDevol.textContent=`Prazo vencido — ${Math.abs(rest)} dia(s) útil(is) para devolver ao fiscal. Providencie imediatamente.`; }
+          if (rest<0) { slaDevol.className='sla-note n-err'; slaDevol.textContent=`Prazo vencido — ${Math.abs(rest)} dia(s) útil(is) para devolver ao fiscal.`; }
           else if (rest===0) { slaDevol.className='sla-note n-warn'; slaDevol.textContent='Último dia útil para devolver ao fiscal.'; }
           else { slaDevol.className='sla-note n-ok'; slaDevol.textContent=`Devolva ao fiscal em até ${rest} dia(s) útil(is).`; }
         }
+      }
+    }
+
+    // PARCIAL: mostrar card de restante + 2ª NF
+    const restanteCard = document.getElementById('receb-parcial-restante');
+    if (restanteCard) restanteCard.style.display = (curRecebTipo==='parcial' && nfDevol) ? 'block' : 'none';
+
+    if (curRecebTipo === 'parcial' && nfDevol) {
+      const chegada2     = (document.getElementById('f-chegada2')||{}).value||'';
+      const fiscal2Envio = (document.getElementById('f-fiscal2-envio')||{}).value||'';
+      const fiscal2Ret   = (document.getElementById('f-fiscal2-retorno')||{}).value||'';
+      const nf2Devol     = (document.getElementById('f-nf2-devol')||{}).value||'';
+      const recebOk2b    = document.getElementById('f-receb-ok2')?.checked;
+      const dotRest      = document.getElementById('rdot-restante');
+      const slaParcial2  = document.getElementById('sla-parcial2');
+      const devol2Wrap   = document.getElementById('devol2-wrap');
+      const slaDevol2    = document.getElementById('sla-devol2');
+
+      if (dotRest) dotRest.className = `receb-step-dot ${chegada2?'active':''}`;
+
+      if (fiscal2Ret) {
+        // Fiscal devolveu a 2ª NF — mostrar devolução final
+        if (devol2Wrap) devol2Wrap.style.display = 'block';
+        if (recebOk2b) {
+          if (slaDevol2) { slaDevol2.className='sla-note n-ok'; slaDevol2.style.display='block'; slaDevol2.textContent='✓ Fluxo encerrado. SC pode ser concluída.'; }
+        } else if (nf2Devol) {
+          if (slaDevol2) { slaDevol2.className='sla-note n-ok'; slaDevol2.style.display='block'; slaDevol2.textContent=`✓ 2ª NF devolvida ao fiscal em ${nf2Devol.split('-').reverse().join('/')}.`; }
+        } else {
+          const el=workDaysElapsed(fiscal2Ret,TODAY); const rest=3-el;
+          if (slaDevol2) { slaDevol2.style.display='block'; slaDevol2.className=rest<0?'sla-note n-err':rest===0?'sla-note n-warn':'sla-note n-ok'; slaDevol2.textContent=rest<0?`Prazo vencido — ${Math.abs(rest)}du para devolver 2ª NF.`:rest===0?'Último dia — devolva a 2ª NF ao fiscal hoje.':`Devolva a 2ª NF ao fiscal em até ${rest} dia(s) útil(is).`; }
+        }
+      } else if (fiscal2Envio) {
+        if (devol2Wrap) devol2Wrap.style.display = 'none';
+        const el=workDaysElapsed(fiscal2Envio,TODAY); const rest=3-el;
+        if (slaParcial2) { slaParcial2.style.display='block'; slaParcial2.className=rest<0?'sla-note n-err':rest===0?'sla-note n-warn':'sla-note n-ok'; slaParcial2.textContent=rest<0?`Fiscal não devolveu 2ª NF — ${Math.abs(rest)}du vencido.`:rest===0?'Último dia — fiscal devolve a 2ª NF hoje.':`Aguardando retorno do fiscal — ${rest} dia(s) útil(is).`; }
+      } else if (chegada2) {
+        if (devol2Wrap) devol2Wrap.style.display = 'none';
+        if (slaParcial2) { slaParcial2.className='sla-note n-ok'; slaParcial2.style.display='block'; slaParcial2.textContent='Restante recebido. Envie a 2ª NF ao fiscal.'; }
       }
     }
   }
@@ -3275,9 +3437,16 @@ function collectFormData() {
     fiscalEnvio:  (document.getElementById('f-fiscal-envio')||{}).value||'',
     fiscalRetorno:(document.getElementById('f-fiscal-retorno')||{}).value||'',
     chegada:      (document.getElementById('f-chegada')||{}).value||'',
-    chegou:       document.getElementById('f-chegou')?.checked||false,
+    chegou:       !!((document.getElementById('f-chegada')||{}).value),
+    recebTipo:    curRecebTipo,
     nfDevol:      (document.getElementById('f-nf-devol')||{}).value||'',
     recebOk:      document.getElementById('f-receb-ok')?.checked||false,
+    chegada2:     (document.getElementById('f-chegada2')||{}).value||'',
+    nf2Numero:    (document.getElementById('f-nf2-numero')||{}).value||'',
+    fiscal2Envio: (document.getElementById('f-fiscal2-envio')||{}).value||'',
+    fiscal2Retorno:(document.getElementById('f-fiscal2-retorno')||{}).value||'',
+    nf2Devol:     (document.getElementById('f-nf2-devol')||{}).value||'',
+    recebOk2:     document.getElementById('f-receb-ok2')?.checked||false,
     justif: document.getElementById('f-justif').value,
     fat: curFat, fatNum: document.getElementById('f-fatnum').value, om: '',
     itens, checklist, files,
