@@ -2426,7 +2426,7 @@ function openNew(colId) {
     justif: '', itens: [], checklist: [], files: [],
   };
   cards.push(draft);
-  editId = draft.id;
+  editId = String(draft.id); // normalizar para string igual ao Firebase
   render();
   resetForm();
   if (colId) document.getElementById('f-col').value = colId;
@@ -2442,7 +2442,7 @@ function openEdit(id) {
   const c = cards.find(x => String(x.id) === String(id));
   if (!c) { console.warn('Card não encontrado:', id); return; }
   try {
-  editId = id;
+  editId = c.id; // usar o id real do card (pode ser string ou número)
   const setV = (id, v) => { const el=document.getElementById(id); if(el) el.value = v||''; };
   const setC = (id, v) => { const el=document.getElementById(id); if(el) el.checked = !!v; };
   const setT = (id, v) => { const el=document.getElementById(id); if(el) el.textContent = v||''; };
@@ -2605,15 +2605,13 @@ function resetForm() {
 function closeModal() {
   // Salva rascunho automático se tiver título
   if (editId !== null) {
-    const c = cards.find(x => x.id === editId);
+    const c = cards.find(x => String(x.id) === String(editId));
     if (c && c.rascunho) {
       const titulo = (document.getElementById('f-titulo')||{}).value||'';
       if (titulo.trim()) {
-        // Tem título: salva como rascunho com dados atuais
         autoSaveDraft();
       } else {
-        // Sem título: remove o rascunho vazio
-        const idx = cards.findIndex(x => x.id === editId);
+        const idx = cards.findIndex(x => String(x.id) === String(editId));
         if (idx >= 0) { cards.splice(idx, 1); fbDeleteCard(editId); }
       }
     }
@@ -2630,7 +2628,7 @@ function ovClick(e) {
 
 function autoSaveDraft() {
   if (editId === null) return;
-  const idx = cards.findIndex(c => c.id === editId);
+  const idx = cards.findIndex(c => String(c.id) === String(editId));
   if (idx < 0) return;
   const data = collectFormData();
   data.rascunho = true;
@@ -2641,9 +2639,9 @@ function autoSaveDraft() {
 function cancelarSC() {
   // Botão Cancelar: remove rascunho explicitamente
   if (editId !== null) {
-    const c = cards.find(x => x.id === editId);
+    const c = cards.find(x => String(x.id) === String(editId));
     if (c && c.rascunho) {
-      const idx = cards.findIndex(x => x.id === editId);
+      const idx = cards.findIndex(x => String(x.id) === String(editId));
       if (idx >= 0) { cards.splice(idx, 1); fbDeleteCard(editId); }
     }
   }
@@ -3610,18 +3608,24 @@ function save() {
   const data = collectFormData();
   if (!data.titulo.trim()) { toast('Informe o título da SC','w'); return; }
   data.rascunho = false; // ao salvar, deixa de ser rascunho
-  if (editId!==null) {
-    const i=cards.findIndex(c=>c.id===editId);
-    if(i>=0) cards[i]={...cards[i],...data};
-    fbSaveCard(cards[i>=0?i:cards.length-1]);
-    toast('SC atualizada.');
+  if (editId !== null) {
+    const i = cards.findIndex(c => String(c.id) === String(editId));
+    if (i >= 0) {
+      cards[i] = { ...cards[i], ...data };
+      fbSaveCard(cards[i]);
+      toast('SC atualizada.');
+    } else {
+      toast('Erro: card não encontrado. Tente novamente.', 'e');
+      return;
+    }
   } else {
-    data.id=nextId++;
+    data.id = nextId++;
     cards.push(data);
     fbSaveCard(data);
     toast('SC criada com sucesso.');
   }
-  closeModal(); render();
+  closeModal();
+  render();
 }
 
 // ── FILTERS ───────────────────────────────────────────────
@@ -4220,12 +4224,20 @@ function renderHist() {
 // ── FIREBASE SYNC ─────────────────────────────────────────
 function fbSaveCard(card) {
   if (!window._fbReady) return;
+  if (!card || card.id === undefined || card.id === null) {
+    console.error('fbSaveCard: card inválido', card); return;
+  }
   const { db, ref, set } = window._fb;
-  // Remove dados binários grandes (base64) antes de salvar — salva só metadados dos arquivos
+  // Remove base64 dos arquivos — salva só metadados
   const c = { ...card, files: (card.files||[]).map(f =>
-    typeof f === 'object' ? { name: f.name, size: f.size, type: f.type } : { name: f, size:'', type:'' }
+    typeof f === 'object' ? { name: f.name||'', size: f.size||0, type: f.type||'' } : { name: String(f), size:0, type:'' }
   )};
-  set(ref(db, 'cards/' + card.id), c);
+  // Garantir que todos os valores são serializáveis (sem undefined)
+  Object.keys(c).forEach(k => { if (c[k] === undefined) c[k] = null; });
+  set(ref(db, 'cards/' + String(card.id)), c).catch(err => {
+    console.error('Erro ao salvar no Firebase:', err);
+    toast('Erro ao salvar no Firebase. Verifique a conexão.', 'e');
+  });
 }
 
 function fbDeleteCard(id) {
@@ -4252,7 +4264,9 @@ function initFirebase() {
   onValue(ref(db, 'cards'), snap => {
     const data = snap.val() || {};
     cards = Object.values(data);
-    nextId = cards.length ? Math.max(...cards.map(c=>c.id||0)) + 1 : 1;
+    // Converter IDs para número para garantir consistência do nextId
+    const maxId = cards.length ? Math.max(...cards.map(c => parseInt(c.id)||0)) : 0;
+    if (maxId >= nextId) nextId = maxId + 1;
     render();
   });
 
