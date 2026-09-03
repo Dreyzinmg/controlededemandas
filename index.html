@@ -271,26 +271,26 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .empty-col { text-align: center; padding: 28px 10px; color: var(--text-dim); font-size: 12px; }
 
 /* ── MODAL OVERLAY ── */
+.modal {
+  background: var(--white); border-radius: 11px;
+  width: 100%; max-width: 680px; min-width: 320px;
+  height: calc(100vh - 40px);
+  max-height: 860px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
 .overlay {
   position: fixed; inset: 0;
   background: rgba(10,25,15,0.45);
   z-index: 200; display: none;
-  align-items: flex-start; justify-content: center;
-  padding: 20px; backdrop-filter: blur(3px);
-  overflow-y: auto;
+  align-items: center; justify-content: center;
+  padding: 16px; backdrop-filter: blur(3px);
+  box-sizing: border-box;
 }
 .overlay.open { display: flex; }
-
-.modal {
-  background: var(--white); border-radius: 11px;
-  width: 100%; max-width: 680px;
-  height: fit-content;
-  max-height: calc(100vh - 40px);
-  display: flex; flex-direction: column;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-  border: 1px solid var(--border);
-  margin: auto;
-}
 
 .modal-hdr {
   background: linear-gradient(135deg, var(--green-dark), var(--green-main));
@@ -310,7 +310,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 }
 .modal-x:hover { background: rgba(255,255,255,0.25); }
 
-.modal-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.modal-body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0; /* essencial para flex + overflow funcionar corretamente */
+}
 .modal-foot {
   padding: 13px 22px; border-top: 1px solid var(--border);
   display: flex; justify-content: flex-end; gap: 8px;
@@ -346,7 +352,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .fctl::placeholder { color: var(--text-dim); }
 
 /* tipo selector */
-.tipo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.tipo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
 .tipo-btn {
   padding: 9px 6px; border-radius: var(--r);
   border: 1.5px solid var(--border); background: var(--bg);
@@ -1215,12 +1221,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
         <button class="tipo-btn s-normal" id="tb-normal"   onclick="selTipo('normal')">SC Normal<span class="sub">Lead time 20 dias úteis</span></button>
         <button class="tipo-btn"          id="tb-urgente"  onclick="selTipo('urgente')">Normal Urgente<span class="sub">Lead time 10 dias úteis</span></button>
         <button class="tipo-btn"          id="tb-delegada" onclick="selTipo('delegada')">SC Delegada<span class="sub">Fornecedor definido</span></button>
-      </div>
-      <div style="margin-top:6px;">
-        <button class="tipo-btn" id="tb-emergencial" onclick="selTipo('emergencial')" style="width:100%;padding:8px;">
-          Emergencial — item já adquirido sem pedido aprovado
-          <span class="sub">Usar apenas se suprimentos venceu o prazo ou situação crítica</span>
-        </button>
+        <button class="tipo-btn"          id="tb-emergencial" onclick="selTipo('emergencial')">Emergencial<span class="sub">Item já adquirido</span></button>
       </div>
       <div class="tipo-info ti-ok" id="tipo-info">
         SC Normal: lead time de 20 dias úteis. Suprimentos cotará com múltiplos fornecedores.
@@ -1551,7 +1552,6 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
               <div id="frete-status-ded" style="display:none;margin-top:8px;"></div>
             </div>
 
-          </div>
             </div><!-- /etapa5-frete -->
 
             <!-- EXECUÇÃO DE SERVIÇO (delegada serviço) -->
@@ -1577,8 +1577,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
               <div id="srv-prazo-status" class="sla-note" style="display:none;margin-top:10px;"></div>
             </div><!-- /etapa5-servico -->
 
-          </div>
-        </div>
+          </div><!-- /sla-step-body -->
+        </div><!-- /sla-step -->
 
       </div><!-- /sec etapas -->
 
@@ -1777,55 +1777,80 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
          ROTA B: EMERGENCIAL
          ════════════════════════════════════════════ -->
     <div id="rota-emergencial" style="display:none">
+
       <div class="sec">
-        <div class="sec-title">Dados da Nota Fiscal</div>
-        <div class="g2">
-          <div class="fgrp">
-            <label class="flbl">Número da NF</label>
-            <input class="fctl" id="f-nf-num" placeholder="Ex: 012345">
+        <div class="sec-title">Frete</div>
+        <div class="frete-cards">
+          <div class="frete-card" id="em-fc-CIF" onclick="selFreteEm('CIF')">
+            <div class="frete-card-title">CIF</div>
+            <div class="frete-card-sub">fornecedor paga</div>
           </div>
-          <div class="fgrp">
-            <label class="flbl">Data da NF</label>
-            <input type="date" class="fctl" id="f-nf-data">
+          <div class="frete-card" id="em-fc-FOB" onclick="selFreteEm('FOB')">
+            <div class="frete-card-title">FOB</div>
+            <div class="frete-card-sub">nossa conta</div>
           </div>
-          <div class="fgrp">
-            <label class="flbl">Valor total (R$)</label>
-            <input class="fctl" id="f-nf-valor" placeholder="Ex: 3.200,00">
-          </div>
-          <div class="fgrp">
-            <label class="flbl">CNPJ do Fornecedor</label>
-            <input class="fctl" id="f-nf-cnpj" placeholder="00.000.000/0001-00">
-          </div>
-          <div class="fgrp span2">
-            <label class="flbl">Status de recebimento</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="fresult-btn" id="em-rec-pend"   onclick="selReceb('pendente')">Aguardando recebimento</button>
-              <button class="fresult-btn" id="em-rec-parc"   onclick="selReceb('parcial')">Recebido parcialmente</button>
-              <button class="fresult-btn" id="em-rec-ok"     onclick="selReceb('ok')">Recebido completo</button>
-              <button class="fresult-btn" id="em-rec-div"    onclick="selReceb('divergencia')">Divergência / Problema</button>
-            </div>
-          </div>
-          <div class="fgrp span2">
-            <label class="flbl">Observações / Justificativa</label>
-            <textarea class="fctl" id="f-nf-obs" autocomplete="off" rows="3" placeholder="Descreva a situação que gerou a compra emergencial..."></textarea>
+          <div class="frete-card" id="em-fc-DEDICADO" onclick="selFreteEm('DEDICADO')">
+            <div class="frete-card-title">Dedicado</div>
+            <div class="frete-card-sub">contratado</div>
           </div>
         </div>
-        <!-- Frete na emergencial -->
-        <div class="sec-title" style="margin-top:16px">Frete</div>
-        <div class="frete-btns" style="margin-bottom:10px;">
-          <button class="frete-btn" id="em-frete-cif"      onclick="selFreteEm('CIF')">CIF<span class="frete-sub">fornecedor paga</span></button>
-          <button class="frete-btn" id="em-frete-fob"      onclick="selFreteEm('FOB')">FOB<span class="frete-sub">nossa conta</span></button>
-          <button class="frete-btn" id="em-frete-dedicado" onclick="selFreteEm('DEDICADO')">Dedicado<span class="frete-sub">contratado</span></button>
-        </div>
-        <div id="em-frete-ded-box" style="display:none;">
+        <div id="em-frete-ded-box" style="display:none;margin-top:10px;">
           <div class="g2">
             <div class="fgrp"><label class="flbl">Transportadora</label><input class="fctl" id="f-em-frete-forn" placeholder="Nome"></div>
             <div class="fgrp"><label class="flbl">CNPJ</label><input class="fctl" id="f-em-frete-cnpj" placeholder="00.000.000/0001-00"></div>
             <div class="fgrp"><label class="flbl">Valor (R$)</label><input class="fctl" id="f-em-frete-valor" placeholder="Ex: 450,00"></div>
-            <div class="fgrp"><label class="flbl">Prazo</label><input class="fctl" id="f-em-frete-prazo" placeholder="Ex: 2 dias"></div>
+            <div class="fgrp"><label class="flbl">Prazo de entrega</label><input type="date" class="fctl" id="f-em-frete-prazo"></div>
           </div>
         </div>
       </div>
+
+      <div class="sec">
+        <div class="sec-title">Nota Fiscal</div>
+        <div class="receb-card">
+          <div class="receb-card-hdr">
+            <div class="receb-step-dot" id="rdot-em-nf"></div>
+            <div>
+              <div class="receb-card-title">Dados da NF</div>
+              <div class="receb-card-hint">preencha quando a NF aparecer no painel Fluig</div>
+            </div>
+          </div>
+          <div class="receb-card-body">
+            <div class="g2">
+              <div class="fgrp"><label class="flbl">Nº da Nota Fiscal</label><input class="fctl" id="f-em-nf-numero" placeholder="Ex: 1614798"></div>
+              <div class="fgrp"><label class="flbl">Data de emissão da NF</label><input type="date" class="fctl" id="f-em-nf-emissao" oninput="calcRecebEm()"></div>
+              <div class="fgrp"><label class="flbl">Nº Fluig da NF</label><input class="fctl" id="f-em-nf-fluig" placeholder="Ex: 662000"></div>
+              <div class="fgrp"><label class="flbl">Observação</label><input class="fctl" id="f-em-nf-obs" placeholder="Observações sobre a NF"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" id="em-step-fiscal" style="display:none;">
+        <div class="sec-title">Envio ao Fiscal <span class="sla-step-hint">— 3 dias úteis para enviar · encerra o fluxo</span></div>
+        <div class="receb-card">
+          <div class="receb-card-hdr">
+            <div class="receb-step-dot" id="rdot-em-fiscal"></div>
+            <div>
+              <div class="receb-card-title">NF enviada ao fiscal — fluxo encerrado</div>
+              <div class="receb-card-hint">após o envio o processo está concluído</div>
+            </div>
+          </div>
+          <div class="receb-card-body">
+            <div class="g2">
+              <div class="fgrp"><label class="flbl">Data de envio ao fiscal</label><input type="date" class="fctl" id="f-em-fiscal-envio" oninput="calcRecebEm()"></div>
+              <div class="fgrp" style="padding-top:22px;">
+                <label class="receb-check-label">
+                  <input type="checkbox" id="f-em-receb-ok" onchange="calcRecebEm()" style="accent-color:var(--green-accent);">
+                  <span>NF enviada — fluxo encerrado</span>
+                </label>
+              </div>
+            </div>
+            <div id="em-fiscal-sla" class="sla-note" style="display:none;margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /rota-emergencial -->
 
   </div><!-- /modal-body -->
 
@@ -1836,6 +1861,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
     <button class="btn btn-green" onclick="save()">Salvar SC</button>
   </div>
 </div>
+
 
 <div class="toasts" id="toasts"></div>
 
@@ -2507,6 +2533,18 @@ function openEdit(id) {
   if(rfM) rfM.style.display = c.delTipo==='servico'?'none':'';
   if(rfS) rfS.style.display = c.delTipo==='servico'?'':' none';
   if(c.delTipo==='servico') calcRecebSrv();
+  curFreteEm = c.emFreteEm||''; if(c.emFreteEm) selFreteEm(c.emFreteEm);
+  setV('f-em-nf-numero',   c.emNfNumero);
+  setV('f-em-nf-emissao',  c.emNfEmissao);
+  setV('f-em-nf-fluig',    c.emNfFluig);
+  setV('f-em-nf-obs',      c.emNfObs);
+  setV('f-em-fiscal-envio',c.emFiscalEnvio);
+  setC('f-em-receb-ok',    c.emRecebOk);
+  setV('f-em-frete-forn',  c.emFreteForn);
+  setV('f-em-frete-cnpj',  c.emFreteCNPJ);
+  setV('f-em-frete-valor', c.emFreteValor);
+  setV('f-em-frete-prazo', c.emFretePrazo);
+  if(c.tipo==='emergencial') calcRecebEm();
   // Atualizar status de prazo dos fretes ao abrir card
   ['cif','fob','ded'].forEach(t => calcPrazoFrete(t));
   // Ocultar painel SLA se PC já preenchido
@@ -2652,10 +2690,10 @@ function cancelarSC() {
 
 // ── TIPO ──────────────────────────────────────────────────
 const TIPO_MSGS = {
-  normal:      { txt:'SC Normal: lead time de 20 dias. Suprimentos cotará com múltiplos fornecedores buscando melhor preço e prazo.', cls:'ti-ok' },
-  urgente:     { txt:'Normal Urgente: lead time reduzido para 10 dias. Use apenas quando a urgência é real e justificada.', cls:'ti-warn' },
-  delegada:    { txt:'SC Delegada: compra direcionada a fornecedor já definido. Limite R$ 5 mil para peças e R$ 10 mil para serviços.', cls:'ti-blue' },
-  emergencial: { txt:'Emergencial: item adquirido sem pedido aprovado. Indica falta de planejamento. Só utilize se o suprimentos estourou o prazo.', cls:'ti-err' },
+  normal:      { txt:'SC Normal: lead time de 20 dias úteis. Suprimentos cotará com múltiplos fornecedores.', cls:'ti-ok' },
+  urgente:     { txt:'Normal Urgente: lead time de 10 dias úteis. Use apenas quando a urgência é real e justificada.', cls:'ti-warn' },
+  delegada:    { txt:'SC Delegada: compra direcionada a fornecedor definido. Limite R$ 5 mil (peças) / R$ 10 mil (serviços).', cls:'ti-blue' },
+  emergencial: { txt:'Emergencial: item já adquirido. Registre a nota fiscal, fornecedor e status de recebimento.', cls:'ti-err' },
 };
 
 function selTipo(t) {
@@ -2665,11 +2703,11 @@ function selTipo(t) {
     if (!b) return;
     b.className = `tipo-btn${x===t?' s-'+t:''}`;
   });
-  const m = TIPO_MSGS[t];
+  const m = TIPO_MSGS[t] || TIPO_MSGS.normal;
   const box = document.getElementById('tipo-info');
   if (box) { box.className = `tipo-info ${m.cls}`; box.textContent = m.txt; }
 
-  // Roteamento de telas
+  // Roteamento de telas — todos com guards
   const rotaFluig = document.getElementById('rota-fluig');
   const rotaEm    = document.getElementById('rota-emergencial');
   const secJustif = document.getElementById('sec-justif');
@@ -2677,20 +2715,20 @@ function selTipo(t) {
   if (rotaEm)    rotaEm.style.display    = t === 'emergencial' ? '' : 'none';
   if (secJustif) secJustif.style.display = t === 'emergencial' ? 'none' : '';
 
-  // Analista suprimentos: ocultar para delegada (não passa pelo suprimentos)
+  // Analista suprimentos: ocultar para delegada
   const analistaW = document.getElementById('analista-oc-wrap');
   if (analistaW) analistaW.style.display = t === 'delegada' ? 'none' : '';
 
   // Hint da OC
   const ocHint = document.getElementById('oc-hint');
   if (ocHint) {
-    if (t === 'delegada')  ocHint.textContent = '— sem lead time do suprimentos (compra interna)';
+    if (t === 'delegada')     ocHint.textContent = '— sem lead time do suprimentos (compra interna)';
     else if (t === 'urgente') ocHint.textContent = '— início da contagem SLA do suprimentos (10 dias úteis)';
-    else ocHint.textContent = '— início da contagem SLA do suprimentos (20 dias úteis)';
+    else                      ocHint.textContent = '— início da contagem SLA do suprimentos (20 dias úteis)';
   }
 
-  // Tipo de compra permanece ao trocar tipo de SC (é independente)
-  calcSLA();
+  // Só recalcula SLA se não for emergencial (evita erros em elementos ocultos)
+  if (t !== 'emergencial') calcSLA();
 }
 
 // ── FAT ───────────────────────────────────────────────────
@@ -3209,16 +3247,55 @@ function onPCInput() {
 
 let curFreteEm = '';
 function selFreteEm(f) {
+  if (curFreteEm === f) {
+    curFreteEm = '';
+    ['CIF','FOB','DEDICADO'].forEach(x => { const c=document.getElementById('em-fc-'+x); if(c) c.className='frete-card'; });
+    const d=document.getElementById('em-frete-ded-box'); if(d) d.style.display='none';
+    return;
+  }
   curFreteEm = f;
-  ['em-frete-cif','em-frete-fob','em-frete-dedicado'].forEach(id => {
-    const b = document.getElementById(id); if(b) b.className = 'frete-btn';
+  ['CIF','FOB','DEDICADO'].forEach(x => {
+    const c = document.getElementById('em-fc-'+x);
+    if (c) c.className = 'frete-card' + (x===f ? ' sel-'+x.toLowerCase() : '');
   });
-  if (f==='CIF')      { const b=document.getElementById('em-frete-cif');      if(b) b.className='frete-btn sel-cif'; }
-  if (f==='FOB')      { const b=document.getElementById('em-frete-fob');      if(b) b.className='frete-btn sel-fob'; }
-  if (f==='DEDICADO') { const b=document.getElementById('em-frete-dedicado'); if(b) b.className='frete-btn sel-ded'; }
   const dedBox = document.getElementById('em-frete-ded-box');
   if (dedBox) dedBox.style.display = f === 'DEDICADO' ? 'block' : 'none';
 }
+
+function calcRecebEm() {
+  const nfEmissao   = (document.getElementById('f-em-nf-emissao')||{}).value||'';
+  const fiscalEnvio = (document.getElementById('f-em-fiscal-envio')||{}).value||'';
+  const recebOk     = document.getElementById('f-em-receb-ok')?.checked;
+  const stepFiscal  = document.getElementById('em-step-fiscal');
+  if (stepFiscal) stepFiscal.style.display = nfEmissao ? '' : 'none';
+  const dotNf     = document.getElementById('rdot-em-nf');
+  const dotFiscal = document.getElementById('rdot-em-fiscal');
+  const slaFiscal = document.getElementById('em-fiscal-sla');
+  if (nfEmissao) {
+    if (dotNf) dotNf.className = 'receb-step-dot done';
+    if (recebOk) {
+      if (dotFiscal) dotFiscal.className = 'receb-step-dot done';
+      if (slaFiscal) { slaFiscal.className='sla-note n-ok'; slaFiscal.style.display='block'; slaFiscal.textContent='Fluxo encerrado.'; }
+    } else if (fiscalEnvio) {
+      if (dotFiscal) dotFiscal.className = 'receb-step-dot done';
+      if (slaFiscal) { slaFiscal.className='sla-note n-ok'; slaFiscal.style.display='block'; slaFiscal.textContent='NF enviada ao fiscal.'; }
+    } else {
+      const el = workDaysElapsed(nfEmissao, TODAY);
+      const rest = 3 - el;
+      if (dotFiscal) dotFiscal.className = 'receb-step-dot ' + (rest<0?'late':'active');
+      if (slaFiscal) {
+        slaFiscal.style.display = 'block';
+        if (rest<0) { slaFiscal.className='sla-note n-err'; slaFiscal.textContent='Prazo vencido para enviar ao fiscal.'; }
+        else if (rest===0) { slaFiscal.className='sla-note n-warn'; slaFiscal.textContent='Ultimo dia util para enviar ao fiscal.'; }
+        else { slaFiscal.className='sla-note n-ok'; slaFiscal.textContent='Envie ao fiscal em ate ' + rest + ' dia(s) util(is).'; }
+      }
+    }
+  } else {
+    if (dotNf) dotNf.className = 'receb-step-dot';
+    if (slaFiscal) slaFiscal.style.display = 'none';
+  }
+}
+
 
 let curReceb = '';
 function selReceb(r) {
@@ -3592,6 +3669,17 @@ function collectFormData() {
     srvNfObs:     (document.getElementById('f-srv-nf-obs')||{}).value||'',
     srvFiscalEnvio:(document.getElementById('f-srv-fiscal-envio')||{}).value||'',
     srvRecebOk:   document.getElementById('f-srv-receb-ok')?.checked||false,
+    emFreteEm:    curFreteEm,
+    emNfNumero:   (document.getElementById('f-em-nf-numero')||{}).value||'',
+    emNfEmissao:  (document.getElementById('f-em-nf-emissao')||{}).value||'',
+    emNfFluig:    (document.getElementById('f-em-nf-fluig')||{}).value||'',
+    emNfObs:      (document.getElementById('f-em-nf-obs')||{}).value||'',
+    emFiscalEnvio:(document.getElementById('f-em-fiscal-envio')||{}).value||'',
+    emRecebOk:    document.getElementById('f-em-receb-ok')?.checked||false,
+    emFreteForn:  (document.getElementById('f-em-frete-forn')||{}).value||'',
+    emFreteCNPJ:  (document.getElementById('f-em-frete-cnpj')||{}).value||'',
+    emFreteValor: (document.getElementById('f-em-frete-valor')||{}).value||'',
+    emFretePrazo: (document.getElementById('f-em-frete-prazo')||{}).value||'',
     chegada2:     (document.getElementById('f-chegada2')||{}).value||'',
     nf2Numero:    (document.getElementById('f-nf2-numero')||{}).value||'',
     fiscal2Envio: (document.getElementById('f-fiscal2-envio')||{}).value||'',
