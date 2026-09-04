@@ -2508,43 +2508,60 @@ function openEdit(id) {
   setV('f-frete-cnpj',     c.freteCNPJ);
   setV('f-frete-valor',    c.freteValor);
   setV('f-frete-prazo',    c.fretePrazo);
-  setV('f-chegada',        c.chegada);
-  curRecebTipo = c.recebTipo||''; if(c.recebTipo) selRecebTipo(c.recebTipo);
-  setV('f-nf-receb',       c.nfReceb);
+
+  // ── Recebimento Material ──
+  curEntrega   = c.entrega||'';
+  curRecebTipo = c.recebTipo||'';
+  ['entrega-pronta','entrega-fabrica'].forEach(function(id){ var b=document.getElementById(id); if(b) b.className='del-tipo-btn'; });
+  ['receb-total','receb-parcial'].forEach(function(id){ var b=document.getElementById(id); if(b) b.className='del-tipo-btn'; });
+  if (c.entrega) selEntrega(c.entrega);
   setV('f-nf-numero',      c.nfNumero);
-  setV('f-contas-resp',    c.contasResp);
+  setV('f-nf-emissao',     c.nfEmissao);
+  setV('f-nf-fluig',       c.nfFluig);
+  setV('f-nf-obs',         c.nfObs);
+  setV('f-fiscal-envio',   c.fiscalEnvio);
+  setV('f-fiscal-retorno', c.fiscalRetorno);
+  setV('f-chegada',        c.chegada);
+  setC('f-chegou',         c.chegou);
+  if (c.recebTipo) selRecebTipo(c.recebTipo);
   setV('f-nf-devol',       c.nfDevol);
-  setC('f-receb-ok',  c.recebOk);
-  setV('f-chegada2',     c.chegada2);
-  setV('f-nf2-numero',   c.nf2Numero);
-  setV('f-fiscal2-envio',c.fiscal2Envio);
+  setC('f-receb-ok',       c.recebOk);
+  setV('f-chegada2',       c.chegada2);
+  setV('f-nf2-numero',     c.nf2Numero);
+  setV('f-fiscal2-envio',  c.fiscal2Envio);
   setV('f-fiscal2-retorno',c.fiscal2Retorno);
-  setV('f-nf2-devol',    c.nf2Devol);
-  setC('f-receb-ok2',    c.recebOk2);
+  setV('f-nf2-devol',      c.nf2Devol);
+  setC('f-receb-ok2',      c.recebOk2);
   calcReceb();
-  setV('f-srv-nf-numero',  c.srvNfNumero);
-  setV('f-srv-nf-emissao', c.srvNfEmissao);
-  setV('f-srv-nf-fluig',   c.srvNfFluig);
-  setV('f-srv-nf-obs',     c.srvNfObs);
+
+  // ── Recebimento Servico ──
+  setV('f-srv-nf-numero',   c.srvNfNumero);
+  setV('f-srv-nf-emissao',  c.srvNfEmissao);
+  setV('f-srv-nf-fluig',    c.srvNfFluig);
+  setV('f-srv-nf-obs',      c.srvNfObs);
   setV('f-srv-fiscal-envio',c.srvFiscalEnvio);
-  setC('f-srv-receb-ok',   c.srvRecebOk);
-  // Exibir fluxo correto no recebimento
-  const rfM=document.getElementById('receb-fluxo-material'); const rfS=document.getElementById('receb-fluxo-servico');
-  if(rfM) rfM.style.display = c.delTipo==='servico'?'none':'';
-  if(rfS) rfS.style.display = c.delTipo==='servico'?'':' none';
-  if(c.delTipo==='servico') calcRecebSrv();
-  curFreteEm = c.emFreteEm||''; if(c.emFreteEm) selFreteEm(c.emFreteEm);
-  setV('f-em-nf-numero',   c.emNfNumero);
-  setV('f-em-nf-emissao',  c.emNfEmissao);
-  setV('f-em-nf-fluig',    c.emNfFluig);
-  setV('f-em-nf-obs',      c.emNfObs);
-  setV('f-em-fiscal-envio',c.emFiscalEnvio);
-  setC('f-em-receb-ok',    c.emRecebOk);
-  setV('f-em-frete-forn',  c.emFreteForn);
-  setV('f-em-frete-cnpj',  c.emFreteCNPJ);
-  setV('f-em-frete-valor', c.emFreteValor);
-  setV('f-em-frete-prazo', c.emFretePrazo);
-  if(c.tipo==='emergencial') calcRecebEm();
+  setC('f-srv-receb-ok',    c.srvRecebOk);
+  var rfM = document.getElementById('receb-fluxo-material');
+  var rfS = document.getElementById('receb-fluxo-servico');
+  if (rfM) rfM.style.display = c.delTipo==='servico' ? 'none' : '';
+  if (rfS) rfS.style.display = c.delTipo==='servico' ? ''     : 'none';
+  if (c.delTipo==='servico') calcRecebSrv();
+
+  // ── Recebimento Emergencial ──
+  curFreteEm = c.emFreteEm||'';
+  ['em-fc-CIF','em-fc-FOB','em-fc-DEDICADO'].forEach(function(id){ var b=document.getElementById(id); if(b) b.className='frete-card'; });
+  if (c.emFreteEm) selFreteEm(c.emFreteEm);
+  setV('f-em-nf-numero',    c.emNfNumero);
+  setV('f-em-nf-emissao',   c.emNfEmissao);
+  setV('f-em-nf-fluig',     c.emNfFluig);
+  setV('f-em-nf-obs',       c.emNfObs);
+  setV('f-em-fiscal-envio', c.emFiscalEnvio);
+  setC('f-em-receb-ok',     c.emRecebOk);
+  setV('f-em-frete-forn',   c.emFreteForn);
+  setV('f-em-frete-cnpj',   c.emFreteCNPJ);
+  setV('f-em-frete-valor',  c.emFreteValor);
+  setV('f-em-frete-prazo',  c.emFretePrazo);
+  if (c.tipo==='emergencial') calcRecebEm();
   // Atualizar status de prazo dos fretes ao abrir card
   ['cif','fob','ded'].forEach(t => calcPrazoFrete(t));
   // Ocultar painel SLA se PC já preenchido
@@ -2638,6 +2655,11 @@ function resetForm() {
   // ── 8. Aplicar padrões ──
   selTipo('normal');
   selFat('cc');
+
+  // ── 9. Limpar painéis de recebimento ──
+  calcReceb();
+  calcRecebSrv();
+  calcRecebEm();
 }
 
 function closeModal() {
