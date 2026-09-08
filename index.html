@@ -2682,8 +2682,7 @@ function closeModal() {
 }
 
 function ovClick(e) {
-  // Clicar fora fecha mas salva rascunho — não perde dados
-  if (e.target === document.getElementById('ov')) closeModal();
+  // Clicar fora NÃO fecha o modal — use os botões Cancelar ou X
 }
 
 function autoSaveDraft() {
@@ -3734,11 +3733,16 @@ function save() {
     fbSaveCard(data);
     toast('SC criada com sucesso.');
   }
-  closeModal();
+  fecharModal();
   render();
 }
 
-// ── FILTERS ───────────────────────────────────────────────
+// Fechar modal diretamente (sem verificação de rascunho)
+function fecharModal() {
+  document.getElementById('ov').classList.remove('open');
+  editId = null;
+  render();
+}
 function setTab(btn,t) {
   activeTab=t;
   document.querySelectorAll('#tabs .pill').forEach(b=>b.className='pill');
