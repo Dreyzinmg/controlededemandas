@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMyIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CgogIDwhLS0gRnVuZG8gdmVyZGUgQ29tYmlvIC0tPgogIDxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMyIiBmaWxsPSIjMUI0MzMyIi8+CgogIDwhLS0gTG9uZyBzaGFkb3cgZGlhZ29uYWwgLS0+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxwYXRoIGQ9Ik0zOCAzOCBMODAgODAgTDgwIDM4IFoiIGZpbGw9IiMwZjJhMWUiIG9wYWNpdHk9IjAuNCIvPgogICAgPHBhdGggZD0iTTM4IDM4IEw2NCA4MCBMODAgODAgTDgwIDY0IFoiIGZpbGw9IiMwZjJhMWUiIG9wYWNpdHk9IjAuMjUiLz4KICA8L2c+CgogIDwhLS0gUmFpb3MgZG8gc29sIC0tPgogIDxnIGNsaXAtcGF0aD0idXJsKCNjKSIgZmlsbD0iI0Y0QTYyMiI+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMCAgIDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDQ1ICAzMiAzMikiLz4KICAgIDxyZWN0IHg9IjMwLjUiIHk9IjUiICB3aWR0aD0iMyIgaGVpZ2h0PSI4IiByeD0iMS41IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCAgMzIgMzIpIi8+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTM1IDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCAzMiAzMikiLz4KICAgIDxyZWN0IHg9IjMwLjUiIHk9IjUiICB3aWR0aD0iMyIgaGVpZ2h0PSI4IiByeD0iMS41IiB0cmFuc2Zvcm09InJvdGF0ZSgyMjUgMzIgMzIpIi8+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMjcwIDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDMxNSAzMiAzMikiLz4KICA8L2c+CgogIDwhLS0gQ29ycG8gZG8gc29sIC0tPgogIDxnIGNsaXAtcGF0aD0idXJsKCNjKSI+CiAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIxMSIgZmlsbD0iI0Y0QTYyMiIvPgogICAgPCEtLSBCcmlsaG8gLS0+CiAgICA8Y2lyY2xlIGN4PSIyOC41IiBjeT0iMjguNSIgcj0iNC41IiBmaWxsPSIjRkZEMTY2IiBvcGFjaXR5PSIwLjYiLz4KICA8L2c+Cjwvc3ZnPg==">
+<link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGRlZnM+CiAgICA8Y2xpcFBhdGggaWQ9ImMiPjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMyIi8+PC9jbGlwUGF0aD4KICA8L2RlZnM+CgogIDwhLS0gRnVuZG8gdmVyZGUgQ29tYmlvIC0tPgogIDxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMyIiBmaWxsPSIjMUI0MzMyIi8+CgogIDwhLS0gTG9uZyBzaGFkb3cgZGlhZ29uYWwgLS0+CiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2MpIj4KICAgIDxwYXRoIGQ9Ik0zOCAzOCBMODAgODAgTDgwIDM4IFoiIGZpbGw9IiMwZjJhMWUiIG9wYWNpdHk9IjAuNCIvPgogICAgPHBhdGggZD0iTTM4IDM4IEw2NCA4MCBMODAgODAgTDgwIDY0IFoiIGZpbGw9IiMwZjJhMWUiIG9wYWNpdHk9IjAuMjUiLz4KICA8L2c+CgogIDwhLS0gUmFpb3MgZG8gc29sIC0tPgogIDxnIGNsaXAtcGF0aD0idXJsKCNjKSIgZmlsbD0iI0Y0QTYyMiI+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMCAgIDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDQ1ICAzMiAzMikiLz4KICAgIDxyZWN0IHg9IjMwLjUiIHk9IjUiICB3aWR0aD0iMyIgaGVpZ2h0PSI4IiByeD0iMS41IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCAgMzIgMzIpIi8+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTM1IDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCAzMiAzMikiLz4KICAgIDxyZWN0IHg9IjMwLjUiIHk9IjUiICB3aWR0aD0iMyIgaGVpZ2h0PSI4IiByeD0iMS41IiB0cmFuc2Zvcm09InJvdGF0ZSgyMjUgMzIgMzIpIi8+CiAgICA8cmVjdCB4PSIzMC41IiB5PSI1IiAgd2lkdGg9IjMiIGhlaWdodD0iOCIgcng9IjEuNSIgdHJhbnNmb3JtPSJyb3RhdGUoMjcwIDMyIDMyKSIvPgogICAgPHJlY3QgeD0iMzAuNSIgeT0iNSIgIHdpZHRoPSIzIiBoZWlnaHQ9IjgiIHJ4PSIxLjUiIHRyYW5zZm9ybT0icm90YXRlKDMxNSAzMiAzMikiLz4KICA8L2c+CgogIDwhLS0gQ29ycG8gZG8gc29sIC0tPgogIDxnIGNsaXAtcGF0aD0idXJsKCNjKSI+CiAgICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIxMSIgZmlsbD0iI0Y0QTYyMiIvPgogICAgPCEtLSBCcmlsaG8gLS0+CiAgICA8Y2lyY2xlIGN4PSIyOC41IiBjeT0iMjguNSIgcj0iNC41IiBmaWxsPSIjRkZEMTY2IiBvcGFjaXR5PSIwLjYiLz4KICA8L2c+Cjwvc3ZnPg==">
+<title>Bom Dia TRM — Três Marias</title>
+<!-- Firebase compat SDK — deve carregar ANTES de qualquer script que use firebase.* -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK carregado no <head> -->
+<script>
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDNSrR2yfN75ChKvPW78trJ8Hh5JJPVTqo",
+    authDomain:        "onepage-combio-tresmarias.firebaseapp.com",
+    databaseURL:       "https://onepage-combio-tresmarias-default-rtdb.firebaseio.com",
+    projectId:         "onepage-combio-tresmarias",
+    storageBucket:     "onepage-combio-tresmarias.firebasestorage.app",
+    messagingSenderId: "699908934102",
+    appId:             "1:699908934102:web:3bf292d4135b56fff13c77"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const _auth = firebase.auth();
+  const _dbRaw = firebase.database();
+
+  // Guard de autenticação — redireciona para login se não logado
+  _auth.onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = './index.html';
+      return;
+    }
+
+    // Expõe helpers no padrão que o BomDia namespace espera
+    window._fbUser = user;
+    window._fb = {
+      db:      _dbRaw,
+      ref:     (db, path) => firebase.database().ref(path),
+      set:     (ref, data) => ref.set(data),
+      onValue: (ref, cb) => { ref.on('value', snap => cb(snap)); },
+      push:    (ref) => ref.push(),
+      remove:  (ref) => ref.remove(),
+    };
+    window._fbSignOut = () => _auth.signOut().then(() => { window.location.href = './index.html'; });
+
+    // Atualiza nome no header
+    const nameEl = document.getElementById('user-display');
+    if (nameEl) {
+      const name = user.email.split('@')[0].replace(/\./g,' ');
+      nameEl.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    // Dispara init do BomDia
+    window.dispatchEvent(new Event('firebase-ready'));
+  });
+</script>
+
+<style>
+:root{--green-900:#1B4332;--green-800:#1E6B3A;--green-700:#2D6A4F;--green-600:#40916C;--green-400:#52B788;--green-100:#D8F3DC;--green-50:#F0FAF4;--gold:#F4A622;--gold-light:#FEF3DC;--red:#D32F2F;--red-light:#FDECEA;--amber:#F59E0B;--amber-light:#FFFBEB;--blue:#1565C0;--blue-light:#E3F2FD;--gray-900:#111827;--gray-700:#374151;--gray-500:#6B7280;--gray-300:#D1D5DB;--gray-100:#F3F4F6;--gray-50:#F9FAFB;--white:#FFFFFF;--shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--radius:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--gray-100);color:var(--gray-900);font-size:14px;line-height:1.5;min-height:100vh}
+
+/* HEADER */
+header{background:var(--green-900);color:white;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-badge{background:white;color:var(--green-900);font-weight:700;font-size:12px;padding:4px 10px;border-radius:6px;letter-spacing:.5px}
+.header-title{font-size:15px;font-weight:600}
+.header-sub{font-size:11px;color:var(--green-400);font-weight:400;margin-top:1px}
+.header-meta{display:flex;gap:12px;align-items:center}
+.meta-item{text-align:right}
+.meta-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.5)}
+.meta-input{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:white;font-family:inherit;font-size:13px;font-weight:600;padding:2px 8px;width:140px}
+.meta-input::placeholder{color:rgba(255,255,255,.4)}
+
+/* HEADER BUTTONS */
+.btn-header-save{background:var(--gold);color:#1a1200;border:none;border-radius:7px;padding:7px 16px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s;white-space:nowrap}
+.btn-header-save:hover{opacity:.88}
+.btn-header-save:disabled{opacity:.55;cursor:default}
+.btn-print{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 12px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;transition:all .2s}
+.btn-print:hover{background:rgba(255,255,255,.18)}
+.btn-logout{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:6px;padding:5px 10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:rgba(255,255,255,.7);transition:all .2s}
+.btn-logout:hover{background:rgba(220,50,50,.25);border-color:rgba(220,50,50,.4);color:white}
+
+/* SYNC BADGE */
+.sync-badge{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;border:1.5px solid;white-space:nowrap}
+.sync-badge.ok{background:var(--green-100);color:var(--green-700);border-color:var(--green-400)}
+.sync-badge.dirty{background:var(--amber-light);color:#92400E;border-color:var(--amber)}
+.sync-badge.error{background:var(--red-light);color:var(--red);border-color:var(--red)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* TABS */
+.tabs{display:flex;gap:2px;padding:0 28px;background:var(--green-800);border-bottom:1px solid rgba(255,255,255,.08)}
+.tab-btn{padding:8px 18px;background:none;border:none;color:rgba(255,255,255,.6);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn.active{color:white;border-bottom-color:var(--gold)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.85)}
+
+/* LAYOUT */
+.main{padding:24px 28px;max-width:1400px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* CALDEIRA */
+.caldeira-bar{border-radius:var(--radius);padding:14px 20px;display:flex;align-items:center;gap:20px;margin-bottom:20px;border:1px solid}
+.caldeira-bar.ok{background:var(--green-50);border-color:var(--green-400)}
+.caldeira-bar.warn{background:var(--amber-light);border-color:var(--amber)}
+.caldeira-bar.crit{background:var(--red-light);border-color:var(--red)}
+.caldeira-icon{font-size:22px}
+.caldeira-info{flex:1}
+.caldeira-title{font-weight:600;font-size:13px;margin-bottom:2px}
+.caldeira-controls{display:flex;gap:10px;align-items:center}
+.status-pill{padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid}
+.pill-ok{background:var(--green-100);color:var(--green-700);border-color:var(--green-400)}
+.pill-warn{background:var(--amber-light);color:#92400E;border-color:var(--amber)}
+.pill-crit{background:var(--red-light);color:var(--red);border-color:var(--red)}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-card{background:var(--white);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);border-left:3px solid var(--green-600)}
+.kpi-card.gold{border-left-color:var(--gold)}
+.kpi-card.red{border-left-color:var(--red)}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-500);font-weight:500}
+.kpi-value{font-size:26px;font-weight:700;margin:4px 0 0;color:var(--gray-900)}
+.kpi-sub{font-size:11px;color:var(--gray-500)}
+
+/* SECTION */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:24px}
+.section-title{font-size:12px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;color:var(--gray-500)}
+.btn-add{display:flex;align-items:center;gap:5px;background:var(--green-700);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-add:hover{background:var(--green-600)}
+
+/* AREA */
+.area-block{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:16px;overflow:hidden}
+.area-header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--gray-100);cursor:pointer;user-select:none}
+.area-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.area-name{font-weight:700;font-size:13px}
+.area-count{font-size:11px;color:var(--gray-500);margin-left:auto}
+.area-toggle{color:var(--gray-400);font-size:12px;transition:transform .2s}
+.area-toggle.collapsed{transform:rotate(-90deg)}
+
+/* DEMANDA ROW — 6 colunas: status | texto | obs | prazo | 💾 | ✕ */
+.demanda-row{display:grid;grid-template-columns:130px 1fr 1fr 100px 90px 34px 30px;align-items:center;gap:8px;padding:9px 18px;border-bottom:1px solid var(--gray-50);transition:background .15s}
+.demanda-row:last-child{border-bottom:none}
+.demanda-row:hover{background:var(--gray-50)}
+.demanda-row.concluida .demanda-text{text-decoration:line-through;color:var(--gray-500)}
+.demanda-row.atrasada{background:#FFF9F9}
+.demanda-header{display:grid;grid-template-columns:130px 1fr 1fr 100px 90px 34px 30px;gap:8px;padding:6px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)}
+.col-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-500)}
+
+.demanda-text{font-size:12.5px;color:var(--gray-700);word-break:break-word}
+.demanda-text[contenteditable="true"]:focus{outline:none;background:var(--gray-50);border-radius:4px;padding:2px 6px;margin:-2px -6px}
+.date-input{font-size:11.5px;border:1px solid var(--gray-300);border-radius:5px;padding:3px 7px;font-family:inherit;color:var(--gray-700);width:100%;background:white}
+.date-input.vencida{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.obs-input{font-size:11.5px;border:1px solid var(--gray-300);border-radius:5px;padding:3px 7px;font-family:inherit;color:var(--gray-500);width:100%}
+.obs-input:focus{outline:none;border-color:var(--green-600)}
+
+/* SAVE / DEL */
+.btn-save-row{background:none;border:1.5px solid var(--gray-300);border-radius:5px;cursor:pointer;color:var(--gray-400);font-size:12px;width:28px;height:26px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;padding:0}
+.btn-save-row:hover{border-color:var(--green-600);color:var(--green-700)}
+.btn-save-row.dirty{border-color:var(--amber);color:var(--amber);background:var(--amber-light)}
+.btn-save-row.saved{border-color:var(--green-400);color:var(--green-700);background:var(--green-100)}
+.btn-del{background:none;border:none;cursor:pointer;color:var(--gray-300);font-size:14px;transition:color .2s;padding:2px;flex-shrink:0}
+.btn-del:hover{color:var(--red)}
+
+/* STATUS ICONS */
+.status-icon-wrap{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--gray-700);white-space:nowrap}
+.status-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.si-aberto{background:var(--blue-light);color:var(--blue);border:1.5px solid #90CAF9}
+.si-andamento{background:var(--amber-light);color:#D97706;border:1.5px solid var(--amber)}
+.si-espera{background:var(--gray-100);color:var(--gray-500);border:1.5px solid var(--gray-300)}
+.si-concluida{background:var(--green-50);color:var(--green-600);border:1.5px solid var(--green-400)}
+.si-atrasada{background:var(--red-light);color:var(--red);border:1.5px solid #EF9A9A}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray-500)}
+
+/* DESTAQUES */
+.destaques-box{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:18px}
+.destaques-box textarea{width:100%;min-height:100px;border:1px solid var(--gray-200);border-radius:6px;padding:10px;font-family:inherit;font-size:13px;color:var(--gray-700);resize:vertical;background:var(--gray-50);line-height:1.6}
+.destaques-box textarea:focus{outline:none;border-color:var(--green-600)}
+
+/* DOO — 5 colunas: texto | status | tipo | 💾 | ✕ */
+.doo-row{display:grid;grid-template-columns:1fr 110px 90px 100px 90px 34px 30px;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid var(--gray-50);transition:background .15s}
+.doo-row:last-child{border-bottom:none}
+.doo-row:hover{background:var(--gray-50)}
+.doo-header{display:grid;grid-template-columns:1fr 110px 90px 100px 90px 34px 30px;gap:8px;padding:6px 16px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)}
+.doo-text{font-size:12.5px;color:var(--gray-700)}
+.doo-text[contenteditable="true"]:focus{outline:none;background:var(--gray-50);border-radius:4px;padding:2px 6px;margin:-2px -6px}
+.tipo-input{font-size:11px;border:1px solid var(--gray-300);border-radius:5px;padding:3px 7px;font-family:inherit;color:var(--gray-700);width:100%}
+.doo-status-select{font-size:11px;font-weight:600;border-radius:5px;padding:3px 6px;border:1px solid var(--gray-300);font-family:inherit;cursor:pointer;width:100%}
+.s-aberto{background:var(--blue-light);color:var(--blue);border-color:#90CAF9}
+.s-andamento{background:var(--amber-light);color:#92400E;border-color:var(--amber)}
+.s-espera{background:var(--gray-100);color:var(--gray-700);border-color:var(--gray-300)}
+.s-concluida{background:var(--green-100);color:var(--green-700);border-color:var(--green-400)}
+.s-atrasada{background:var(--red-light);color:var(--red);border-color:#EF9A9A}
+
+/* MARCOS */
+.marcos-row{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:14px 18px;margin-bottom:16px;font-size:12.5px;color:var(--gray-700)}
+.marcos-row strong{color:var(--gray-900)}
+
+/* ORC */
+.orc-label{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.orc-val{font-size:16px;font-weight:700;margin-top:4px;color:var(--gray-900)}
+.orc-input{font-size:15px;font-weight:700;border:none;background:none;font-family:inherit;color:var(--gray-900);width:88px;display:inline}
+.orc-input:focus{outline:none;border-bottom:2px solid var(--green-600)}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.top-bar-title{font-size:18px;font-weight:700;color:var(--gray-900)}
+.top-bar-sub{font-size:12px;color:var(--gray-500)}
+.top-bar-actions{display:flex;gap:8px}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:3px}
+
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .main{padding:14px}
+  header{padding:8px 14px;height:auto;flex-wrap:wrap;gap:8px}
+  .tabs{padding:0 14px}
+}
+@media print{
+  header,.tabs,.btn-print,.btn-add,.btn-del,.btn-save-row,.btn-header-save{display:none!important}
+  .tab-panel{display:block!important}
+  body{background:white}
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.new-row{animation:fadeIn .25s ease}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--gray-900);color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.2);opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.ok{background:var(--green-700)}
+.toast.err{background:var(--red)}
+
+/* ── CREATED AT label ── */
+.created-lbl{font-size:10px;color:var(--gray-400);white-space:nowrap;line-height:1.3;text-align:center}
+.created-lbl span{display:block;font-weight:600;color:var(--gray-500);font-size:10.5px}
+
+/* ── HISTÓRICO BUTTON ── */
+.btn-history{display:flex;align-items:center;gap:5px;background:var(--blue-light);color:var(--blue);border:1.5px solid #90CAF9;border-radius:6px;padding:5px 12px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-history:hover{background:#BBDEFB;border-color:var(--blue)}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:white;border-radius:14px;padding:28px 32px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);transform:translateY(8px);transition:transform .2s}
+.modal-overlay.open .modal-box{transform:none}
+.modal-title{font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:6px}
+.modal-sub{font-size:12.5px;color:var(--gray-500);margin-bottom:20px;line-height:1.5}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn-modal-cancel{background:var(--gray-100);border:none;border-radius:7px;padding:8px 18px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.btn-modal-confirm{background:var(--red);border:none;border-radius:7px;padding:8px 18px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:white}
+.btn-modal-confirm.green{background:var(--green-700)}
+
+/* ── HISTÓRICO DRAWER ── */
+.hist-drawer{position:fixed;right:0;top:0;bottom:0;width:520px;max-width:95vw;background:white;box-shadow:-8px 0 32px rgba(0,0,0,.15);z-index:600;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column}
+.hist-drawer.open{transform:none}
+.hist-head{padding:20px 24px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;background:var(--green-900);color:white}
+.hist-head h2{font-size:15px;font-weight:700}
+.btn-close-hist{background:none;border:none;color:white;font-size:20px;cursor:pointer;line-height:1}
+.hist-body{flex:1;overflow-y:auto;padding:16px}
+.hist-area-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-500);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--gray-100)}
+.hist-item{background:var(--gray-50);border-radius:8px;padding:10px 14px;margin-bottom:8px;border-left:3px solid var(--green-400)}
+.hist-item .hi-text{font-size:12.5px;color:var(--gray-700);margin-bottom:4px}
+.hist-item .hi-meta{font-size:10.5px;color:var(--gray-400);display:flex;gap:12px}
+.hist-item .hi-obs{font-size:11px;color:var(--gray-500);margin-top:3px;font-style:italic}
+.hist-empty{text-align:center;color:var(--gray-400);font-size:13px;margin-top:40px}
+
+/* ── CRUZ VERDE ── */
+.cruz-section{margin-bottom:20px}
+.cruz-tabs{display:flex;gap:6px;margin-bottom:12px}
+.cruz-tab{padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray-300);background:white;color:var(--gray-500);transition:all .2s}
+.cruz-tab.active{background:var(--green-900);color:white;border-color:var(--green-900)}
+.cruz-year-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-500);margin-bottom:8px}
+.cruz-grid-wrap{overflow-x:auto}
+.cruz-year-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;min-width:900px;margin-bottom:16px}
+.cruz-month{border-radius:8px;overflow:hidden;border:1px solid var(--gray-200)}
+.cruz-month-name{background:var(--green-900);color:white;font-size:10px;font-weight:700;text-align:center;padding:4px 2px;letter-spacing:.5px}
+.cruz-month.current .cruz-month-name{background:var(--gold);color:#1a1200}
+.cruz-month-days{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--gray-200);padding:1px}
+.cruz-day{
+  background:white;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;color:var(--gray-500);cursor:pointer;transition:filter .15s;position:relative;
+  min-height:16px;
+}
+.cruz-day:hover{filter:brightness(.88)}
+.cruz-day.empty{background:var(--gray-50);cursor:default}
+.cruz-day.empty:hover{filter:none}
+/* status colors */
+.cruz-day.s0{background:#52B788;color:white}   /* Sem acidentes */
+.cruz-day.s1{background:#FFD166;color:#333}     /* Tipo I */
+.cruz-day.s2{background:#F4A622;color:white}    /* Tipo II */
+.cruz-day.s3{background:#E76F51;color:white}    /* Tipo III */
+.cruz-day.s4{background:#D32F2F;color:white}    /* Tipo IV */
+.cruz-day.s5{background:#7B1FA2;color:white}    /* Tipo V/VI */
+.cruz-day.s6{background:#90CAF9;color:#1565C0}  /* Aguardando */
+
+/* legend */
+.cruz-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cruz-leg-item{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--gray-600)}
+.cruz-leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* day picker modal */
+.day-picker{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.day-picker.open{opacity:1;pointer-events:all}
+.day-picker-box{background:white;border-radius:14px;padding:24px 28px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.day-picker-title{font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.day-picker-sub{font-size:11.5px;color:var(--gray-500);margin-bottom:16px}
+.dp-options{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.dp-opt{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;border:1.5px solid var(--gray-200);transition:all .15s}
+.dp-opt:hover{border-color:var(--green-400);background:var(--green-50)}
+.dp-opt.selected{border-color:var(--green-600);background:var(--green-100)}
+.dp-color{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+.dp-label{font-size:12px;font-weight:500;color:var(--gray-700)}
+.dp-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-dp-cancel{background:var(--gray-100);border:none;border-radius:7px;padding:7px 16px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--gray-700)}
+.btn-dp-ok{background:var(--green-700);border:none;border-radius:7px;padding:7px 16px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:white}
+
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo-badge">combio</div>
+    <div>
+      <div class="header-title">Bom Dia TRM — Reunião Diária</div>
+      <div class="header-sub">Três Marias Manutenção · Gestão de Rotina</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="meta-item">
+      <div class="meta-label">Data</div>
+      <div class="meta-value" id="today-date"></div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Gestor</div>
+      <input class="meta-input" id="gestor-nome" placeholder="Nome do gestor" value="Fábio Araújo">
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Responsável PCM</div>
+      <input class="meta-input" id="resp-nome" placeholder="Nome do responsável">
+    </div>
+    <div id="sync-badge" class="sync-badge ok"><div class="sync-dot"></div><span>Sincronizado</span></div>
+    <div class="meta-item" style="text-align:right">
+      <div class="meta-label">Usuário</div>
+      <div class="meta-value" id="user-display" style="font-size:12px;text-transform:capitalize">—</div>
+    </div>
+    <button class="btn-header-save" id="btn-global-save" onclick="BomDia.saveGlobal()">☁️ Salvar tudo</button>
+    <button class="btn-print" onclick="window.print()">🖨 Imprimir</button>
+    <button class="btn-logout" onclick="window._fbSignOut && window._fbSignOut()" title="Sair">⏻ Sair</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="BomDia.switchTab('rotina',this)">🏠 Bom Dia — Rotina</button>
+  <button class="tab-btn"        onclick="BomDia.switchTab('doo',this)">📋 Pendências DOO</button>
+</div>
+
+<div class="main">
+
+  <!-- ABA ROTINA -->
+  <div id="tab-rotina" class="tab-panel active">
+    <div class="top-bar">
+      <div>
+        <div class="top-bar-title">Reunião de Alinhamento Diário</div>
+        <div class="top-bar-sub">Use 💾 para salvar cada demanda individualmente · Use ☁️ Salvar tudo para caldeira, orçamento e marcos</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-history" onclick="BomDia.openHistory()">📋 Histórico de concluídas</button>
+      </div>
+    </div>
+
+    <!-- CALDEIRA -->
+    <div id="caldeira-bar" class="caldeira-bar ok">
+      <span class="caldeira-icon">🔥</span>
+      <div class="caldeira-info">
+        <div class="caldeira-title">Status da Caldeira — <span id="caldeira-label">Sem Ocorrências</span></div>
+        <div>
+          <input id="caldeira-obs" style="width:100%;border:none;background:none;font-family:inherit;font-size:12px;color:var(--gray-500);"
+            placeholder="Observação sobre a caldeira (opcional)..." oninput="BomDia.markGlobalDirty()">
+        </div>
+      </div>
+      <div class="caldeira-controls">
+        <button class="status-pill pill-ok"   onclick="BomDia.setCaldeira('ok',  'Sem Ocorrências')">✅ Sem ocorrências</button>
+        <button class="status-pill pill-warn" onclick="BomDia.setCaldeira('warn','Ocorrências de baixo impacto')">⚠️ Baixo impacto</button>
+        <button class="status-pill pill-crit" onclick="BomDia.setCaldeira('crit','Disponibilidade baixa')">🚨 Crítico</button>
+      </div>
+    </div>
+
+
+    <!-- CRUZ VERDE DE SEGURANÇA -->
+    <div class="cruz-section">
+      <!-- Tabs: Pessoal / Ambiental -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="section-title" style="margin:0">✚ Cruz Verde de Segurança</span>
+          <div class="cruz-tabs">
+            <button class="cruz-tab active" id="cruz-tab-pessoal" onclick="BomDia.switchCruz('pessoal')">Pessoal</button>
+            <button class="cruz-tab" id="cruz-tab-ambiental" onclick="BomDia.switchCruz('ambiental')">Ambiental</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legenda -->
+      <div class="cruz-legend">
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#52B788"></div>Sem acidentes</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#FFD166"></div>Tipo I – SAA</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#F4A622"></div>Tipo II – Sem afastamento</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#E76F51"></div>Tipo III – Sem afastamento</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#D32F2F"></div>Tipo IV – Com afastamento</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#7B1FA2"></div>Tipo V/VI – Com afastamento</div>
+        <div class="cruz-leg-item"><div class="cruz-leg-dot" style="background:#90CAF9"></div>Aguardando</div>
+      </div>
+
+      <!-- Histórico anual (todos os meses) -->
+      <div class="cruz-year-label" id="cruz-year-label">2026</div>
+      <div class="cruz-grid-wrap">
+        <div class="cruz-year-grid" id="cruz-year-grid"></div>
+      </div>
+    </div>
+
+    <!-- Day Picker Modal -->
+    <div class="day-picker" id="day-picker">
+      <div class="day-picker-box">
+        <div class="day-picker-title" id="dp-title">Dia 01/01/2026</div>
+        <div class="day-picker-sub">Selecione o status de segurança para este dia:</div>
+        <div class="dp-options" id="dp-options"></div>
+        <div class="dp-actions">
+          <button class="btn-dp-cancel" onclick="BomDia.closeDayPicker()">Cancelar</button>
+          <button class="btn-dp-ok" onclick="BomDia.confirmDayPicker()">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal-overlay" id="modal-delete">
+      <div class="modal-box">
+        <div class="modal-title">⚠️ Confirmar exclusão</div>
+        <div class="modal-sub" id="modal-delete-text">Você tem certeza que quer remover esta demanda?<br>Esta ação não pode ser desfeita.</div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="BomDia.closeDeleteModal()">Cancelar</button>
+          <button class="btn-modal-confirm" id="btn-delete-confirm">Sim, remover</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Drawer -->
+    <div class="hist-drawer" id="hist-drawer">
+      <div class="hist-head">
+        <h2 id="hist-title">📋 Histórico de Concluídas</h2>
+        <button class="btn-close-hist" onclick="BomDia.closeHistory()">✕</button>
+      </div>
+      <div class="hist-body" id="hist-body"></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-label">Total de demandas</div><div class="kpi-value" id="kpi-total">0</div><div class="kpi-sub">ativas</div></div>
+      <div class="kpi-card"><div class="kpi-label">Concluídas</div><div class="kpi-value" id="kpi-conc" style="color:var(--green-700)">0</div><div class="kpi-sub" id="kpi-pct">0%</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Atrasadas</div><div class="kpi-value" id="kpi-atr" style="color:var(--red)">0</div><div class="kpi-sub">prazo vencido</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Em andamento</div><div class="kpi-value" id="kpi-and" style="color:var(--gold)">0</div><div class="kpi-sub">em progresso</div></div>
+    </div>
+
+    <!-- LEGENDA -->
+    <div class="legend">
+      <div class="legend-item"><div class="status-icon si-aberto">🔒</div> Em Aberto</div>
+      <div class="legend-item"><div class="status-icon si-andamento">↻</div> Em Progresso</div>
+      <div class="legend-item"><div class="status-icon si-espera">⏱</div> Em Espera</div>
+      <div class="legend-item"><div class="status-icon si-concluida">✓</div> Concluída</div>
+      <div class="legend-item"><div class="status-icon si-atrasada">!</div> Em Atraso</div>
+      <div class="legend-item" style="margin-left:auto;font-size:10.5px;color:var(--amber);">💾 salva a demanda · ☁️ salva tudo</div>
+    </div>
+
+    <!-- SSMA -->
+    <div id="area-ssma" class="area-block">
+      <div class="area-header" onclick="BomDia.toggleArea('ssma')">
+        <div class="area-dot" style="background:#059669"></div>
+        <div class="area-name">🦺 SSMA — Saúde, Segurança e Meio Ambiente</div>
+        <span class="area-count" id="count-ssma"></span>
+        <span class="area-toggle" id="toggle-ssma">▼</span>
+      </div>
+      <div class="area-body" id="body-ssma">
+        <div class="demanda-header">
+          <div class="col-label">Status</div><div class="col-label">Demanda</div>
+          <div class="col-label">Observação / Justificativa</div><div class="col-label">Prazo</div>
+          <div class="col-label" style="font-size:9px;text-align:center">Criado em</div>
+          <div></div><div></div>
+        </div>
+        <div id="rows-ssma"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--gray-100)">
+          <button class="btn-add" onclick="BomDia.addRow('ssma')">＋ Nova demanda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PCM -->
+    <div id="area-pcm" class="area-block">
+      <div class="area-header" onclick="BomDia.toggleArea('pcm')">
+        <div class="area-dot" style="background:#2563EB"></div>
+        <div class="area-name">🔧 PCM — Planejamento e Controle da Manutenção</div>
+        <span class="area-count" id="count-pcm"></span>
+        <span class="area-toggle" id="toggle-pcm">▼</span>
+      </div>
+      <div class="area-body" id="body-pcm">
+        <div class="demanda-header">
+          <div class="col-label">Status</div><div class="col-label">Demanda</div>
+          <div class="col-label">Observação / Justificativa</div><div class="col-label">Prazo</div>
+          <div class="col-label" style="font-size:9px;text-align:center">Criado em</div>
+          <div></div><div></div>
+        </div>
+        <div id="rows-pcm"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--gray-100)">
+          <button class="btn-add" onclick="BomDia.addRow('pcm')">＋ Nova demanda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADM -->
+    <div id="area-adm" class="area-block">
+      <div class="area-header" onclick="BomDia.toggleArea('adm')">
+        <div class="area-dot" style="background:#D97706"></div>
+        <div class="area-name">📋 ADM — Assistente Administrativa</div>
+        <span class="area-count" id="count-adm"></span>
+        <span class="area-toggle" id="toggle-adm">▼</span>
+      </div>
+      <div class="area-body" id="body-adm">
+        <div class="demanda-header">
+          <div class="col-label">Status</div><div class="col-label">Demanda</div>
+          <div class="col-label">Observação / Justificativa</div><div class="col-label">Prazo</div>
+          <div class="col-label" style="font-size:9px;text-align:center">Criado em</div>
+          <div></div><div></div>
+        </div>
+        <div id="rows-adm"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--gray-100)">
+          <button class="btn-add" onclick="BomDia.addRow('adm')">＋ Nova demanda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GESTOR -->
+    <div id="area-gestor" class="area-block">
+      <div class="area-header" onclick="BomDia.toggleArea('gestor')">
+        <div class="area-dot" style="background:#7C3AED"></div>
+        <div class="area-name">👔 Gestor da Unidade</div>
+        <span class="area-count" id="count-gestor"></span>
+        <span class="area-toggle" id="toggle-gestor">▼</span>
+      </div>
+      <div class="area-body" id="body-gestor">
+        <div class="demanda-header">
+          <div class="col-label">Status</div><div class="col-label">Demanda</div>
+          <div class="col-label">Observação / Justificativa</div><div class="col-label">Prazo</div>
+          <div class="col-label" style="font-size:9px;text-align:center">Criado em</div>
+          <div></div><div></div>
+        </div>
+        <div id="rows-gestor"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--gray-100)">
+          <button class="btn-add" onclick="BomDia.addRow('gestor')">＋ Nova demanda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARCOS -->
+    <div class="section-head" style="margin-top:24px">
+      <span class="section-title">⚙️ Marcos Operacionais</span>
+    </div>
+    <div class="marcos-row">
+      <strong>Última parada de limpeza:</strong>
+      <input id="marco-limpeza" style="border:none;background:none;font-family:inherit;font-size:12.5px;color:var(--gray-700);margin-left:8px;width:200px"
+        value="Out/2025" oninput="BomDia.markGlobalDirty()">
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <strong>Período abrangido:</strong>
+      <input id="marco-periodo" style="border:none;background:none;font-family:inherit;font-size:12.5px;color:var(--gray-700);margin-left:8px;width:160px"
+        placeholder="dd/mm/aaaa" oninput="BomDia.markGlobalDirty()">
+    </div>
+
+    <!-- ORÇAMENTO — 3 cards lado a lado -->
+    <div class="section-head" style="margin-top:24px">
+      <span class="section-title">💰 Orçamento</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px">
+
+      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden">
+        <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)">
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--blue)">🔧 Manutenção</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Orçado</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-man-orc" value="111,25 Mil"
+              oninput="BomDia.calcSaldo('man');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Gasto</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-man-gasto" value="7,16 Mil"
+              oninput="BomDia.calcSaldo('man');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px">
+            <div class="orc-label">Saldo</div>
+            <div id="orc-man-saldo" style="font-size:15px;font-weight:700;color:var(--green-700);margin-top:4px">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden">
+        <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)">
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--green-700)">⚙️ Operação</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Orçado</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-op-orc" placeholder="0,00 Mil"
+              oninput="BomDia.calcSaldo('op');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Gasto</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-op-gasto" placeholder="0,00 Mil"
+              oninput="BomDia.calcSaldo('op');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px">
+            <div class="orc-label">Saldo</div>
+            <div id="orc-op-saldo" style="font-size:15px;font-weight:700;color:var(--green-700);margin-top:4px">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden">
+        <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)">
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#059669">🦺 SSMA</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Orçado</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-ssma-orc" placeholder="0,00 Mil"
+              oninput="BomDia.calcSaldo('ssma');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px;border-right:1px solid var(--gray-100)">
+            <div class="orc-label">Gasto</div>
+            <div class="orc-val">R$ <input class="orc-input" id="orc-ssma-gasto" placeholder="0,00 Mil"
+              oninput="BomDia.calcSaldo('ssma');BomDia.markGlobalDirty()"></div>
+          </div>
+          <div style="padding:14px 16px">
+            <div class="orc-label">Saldo</div>
+            <div id="orc-ssma-saldo" style="font-size:15px;font-weight:700;color:var(--green-700);margin-top:4px">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DESTAQUES -->
+    <div class="section-head">
+      <span class="section-title">💡 Destaques e Principais Aprendizados</span>
+    </div>
+    <div class="destaques-box">
+      <textarea id="destaques" placeholder="Registre os principais aprendizados, destaques positivos e pontos de melhoria..."
+        oninput="BomDia.markGlobalDirty()"></textarea>
+    </div>
+  </div><!-- /tab-rotina -->
+
+  <!-- ABA DOO -->
+  <div id="tab-doo" class="tab-panel">
+    <div class="top-bar">
+      <div>
+        <div class="top-bar-title">Pendências DOO</div>
+        <div class="top-bar-sub">Ações oriundas de análises de causa raiz — use 💾 por linha ou ☁️ Salvar tudo</div>
+      </div>
+      <div class="top-bar-actions" style="display:flex;gap:8px">
+        <button class="btn-history" onclick="BomDia.openHistory('doo')">📋 Histórico DOO</button>
+        <button class="btn-add" onclick="BomDia.addDooRow()">＋ Nova pendência</button>
+      </div>
+    </div>
+    <div class="kpi-row" style="margin-bottom:20px">
+      <div class="kpi-card"><div class="kpi-label">Total</div><div class="kpi-value" id="doo-total">0</div></div>
+      <div class="kpi-card"><div class="kpi-label">Finalizadas</div><div class="kpi-value" id="doo-fin" style="color:var(--green-700)">0</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Vencidas</div><div class="kpi-value" id="doo-venc" style="color:var(--red)">0</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Em Aberto</div><div class="kpi-value" id="doo-aberto" style="color:var(--gold)">0</div></div>
+    </div>
+    <div class="area-block">
+      <div class="doo-header">
+        <div class="col-label">Descrição da Pendência</div>
+        <div class="col-label">Status</div>
+        <div class="col-label">Tipo / ACR</div>
+        <div class="col-label">Prazo</div>
+        <div class="col-label" style="font-size:9px;text-align:center">Criado em</div>
+        <div></div><div></div>
+      </div>
+      <div id="rows-doo"></div>
+    </div>
+  </div><!-- /tab-doo -->
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  BomDia v4 — Firebase compat · Cruz Verde · Histórico · Duplo-check
+// ═══════════════════════════════════════════════════════════════════
+const BomDia = (() => {
+
+  const fb = () => window._fb || null;
+
+  // ── Toast ──
+  let _toastT;
+  function toast(msg, type='ok', ms=2800) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.className = `toast show ${type}`;
+    clearTimeout(_toastT);
+    _toastT = setTimeout(() => el.classList.remove('show'), ms);
+  }
+
+  // ── Sync badge ──
+  function syncBadge(state, txt) {
+    const b = document.getElementById('sync-badge');
+    if (!b) return;
+    b.className = 'sync-badge ' + state;
+    b.innerHTML = `<div class="sync-dot"></div><span>${txt}</span>`;
+  }
+
+  let _gDirty = false;
+  function markGlobalDirty() {
+    _gDirty = true;
+    syncBadge('dirty', 'Alterações pendentes');
+  }
+
+  // ── TABS ──
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── CALDEIRA ──
+  function setCaldeira(type, label) {
+    document.getElementById('caldeira-bar').className = 'caldeira-bar '+type;
+    document.getElementById('caldeira-label').textContent = label;
+    markGlobalDirty();
+  }
+
+  // ── AREA TOGGLE ──
+  function toggleArea(id) {
+    const body = document.getElementById('body-'+id);
+    const tog  = document.getElementById('toggle-'+id);
+    const c    = body.style.display === 'none';
+    body.style.display = c ? '' : 'none';
+    tog.classList.toggle('collapsed', !c);
+  }
+
+  // ── STATUS MAP ──
+  const SM = {
+    aberto:    {icon:'🔒', cls:'si-aberto',    lbl:'Em Aberto'},
+    andamento: {icon:'↻',  cls:'si-andamento', lbl:'Em Progresso'},
+    espera:    {icon:'⏱',  cls:'si-espera',    lbl:'Em Espera'},
+    concluida: {icon:'✓',  cls:'si-concluida', lbl:'Concluída'},
+    atrasada:  {icon:'!',  cls:'si-atrasada',  lbl:'Em Atraso'},
+  };
+
+  function makeStatusSelect(val, onChange) {
+    const wrap  = document.createElement('div'); wrap.style.position='relative';
+    const badge = document.createElement('div'); badge.className='status-icon-wrap';
+    const info  = SM[val]||SM.aberto;
+    const icon  = document.createElement('div');
+    icon.className='status-icon '+info.cls; icon.textContent=info.icon;
+    const lbl   = document.createElement('span');
+    lbl.textContent=info.lbl; lbl.style.cssText='font-size:11.5px;font-weight:500;color:var(--gray-700)';
+    const arr   = document.createElement('span');
+    arr.textContent='▾'; arr.style.cssText='font-size:9px;color:var(--gray-400);margin-left:2px';
+    badge.append(icon, lbl, arr);
+    const sel = document.createElement('select');
+    sel.style.cssText='position:absolute;inset:0;opacity:0;cursor:pointer;width:100%';
+    Object.entries(SM).forEach(([k,v])=>{
+      const o=document.createElement('option'); o.value=k; o.textContent=v.lbl;
+      if(k===val) o.selected=true; sel.append(o);
+    });
+    sel.onchange = function(){
+      const m=SM[this.value]||SM.aberto;
+      icon.className='status-icon '+m.cls; icon.textContent=m.icon; lbl.textContent=m.lbl;
+      if(onChange) onChange(this.value);
+    };
+    wrap.append(badge, sel);
+    return wrap;
+  }
+
+  function makeSaveBtn() {
+    const b = document.createElement('button');
+    b.className='btn-save-row'; b.textContent='💾'; b.title='Salvar esta demanda';
+    return b;
+  }
+  function setSaved(btn) {
+    btn.classList.remove('dirty','saving'); btn.classList.add('saved'); btn.textContent='✓';
+    setTimeout(()=>{ btn.classList.remove('saved'); btn.textContent='💾'; }, 2000);
+  }
+  function markDirtyBtn(btn) {
+    btn.classList.remove('saved'); btn.classList.add('dirty'); btn.textContent='💾';
+  }
+
+  // ── HISTÓRICO storage (in-memory + Firebase) ──
+  let _history = { ssma:[], pcm:[], adm:[], gestor:[], doo:[] };
+
+  async function archiveToHistory(area, data) {
+    const entry = { ...data, archivedAt: new Date().toISOString() };
+    _history[area] = _history[area] || [];
+    _history[area].push(entry);
+    const f = fb();
+    if (f) {
+      try {
+        const nr = f.push(f.ref(f.db, `bomdia/historico/${area}`));
+        await f.set(f.ref(f.db, `bomdia/historico/${area}/${nr.key}`), entry);
+      } catch(e) { console.warn('archive error', e); }
+    }
+  }
+
+  // ── MODAL DELETE ──
+  let _pendingDelete = null;
+
+  function openDeleteModal(label, onConfirm) {
+    document.getElementById('modal-delete-text').innerHTML =
+      `Você tem certeza que quer dar baixa em:<br><strong style="color:var(--gray-800)">"${label.slice(0,80)}${label.length>80?'…':''}"</strong><br><span style="font-size:11px;color:var(--gray-500)">A demanda será movida para o histórico.</span>`;
+    const btn = document.getElementById('btn-delete-confirm');
+    btn.onclick = () => { closeDeleteModal(); onConfirm(); };
+    document.getElementById('modal-delete').classList.add('open');
+  }
+  function closeDeleteModal() {
+    document.getElementById('modal-delete').classList.remove('open');
+  }
+
+  // ── HISTÓRICO DRAWER ──
+  let _histMode = 'rotina';
+
+  function openHistory(mode) {
+    _histMode = mode || 'rotina';
+    const title = mode === 'doo' ? '📋 Histórico DOO Concluídas' : '📋 Histórico de Demandas Concluídas';
+    document.getElementById('hist-title').textContent = title;
+    renderHistory();
+    document.getElementById('hist-drawer').classList.add('open');
+  }
+  function closeHistory() {
+    document.getElementById('hist-drawer').classList.remove('open');
+  }
+  function renderHistory() {
+    const body = document.getElementById('hist-body');
+    body.innerHTML = '';
+    const areas = _histMode === 'doo' ? ['doo'] : ['ssma','pcm','adm','gestor'];
+    const areaNames = { ssma:'🦺 SSMA', pcm:'🔧 PCM', adm:'📋 ADM', gestor:'👔 Gestor', doo:'📋 DOO' };
+    let anyItem = false;
+    areas.forEach(area => {
+      const items = (_history[area] || []).slice().reverse();
+      if (!items.length) return;
+      anyItem = true;
+      const title = document.createElement('div');
+      title.className = 'hist-area-title'; title.textContent = areaNames[area] || area;
+      body.appendChild(title);
+      items.forEach(d => {
+        const card = document.createElement('div'); card.className = 'hist-item';
+        const archived = d.archivedAt ? new Date(d.archivedAt).toLocaleDateString('pt-BR') : '—';
+        const created  = d.createdAt  ? new Date(d.createdAt).toLocaleDateString('pt-BR')  : '—';
+        card.innerHTML = `
+          <div class="hi-text">${d.text||d.description||'—'}</div>
+          ${d.obs ? `<div class="hi-obs">${d.obs}</div>` : ''}
+          <div class="hi-meta">
+            <span>📅 Criado: ${created}</span>
+            <span>✅ Baixa: ${archived}</span>
+            ${d.prazo ? `<span>⏰ Prazo: ${d.prazo}</span>` : ''}
+          </div>`;
+        body.appendChild(card);
+      });
+    });
+    if (!anyItem) {
+      body.innerHTML = '<div class="hist-empty">Nenhum item concluído ainda.</div>';
+    }
+  }
+
+  // ── DEMANDA ROW ──
+  function buildRow(area, d, fbKey) {
+    let _key = fbKey || null;
+    const row = document.createElement('div');
+    row.className = 'demanda-row new-row'+
+      (d.status==='concluida'?' concluida':'')+(d.status==='atrasada'?' atrasada':'');
+
+    const dirty = () => { row.classList.add('dirty'); markDirtyBtn(saveBtn); updateKPIs(); };
+
+    // Status
+    const sw = makeStatusSelect(d.status||'aberto', (newVal) => {
+      if (newVal === 'concluida') {
+        row.classList.add('concluida');
+      } else {
+        row.classList.remove('concluida');
+      }
+      dirty();
+    });
+    row.appendChild(sw);
+
+    // Texto
+    const td = document.createElement('div');
+    td.className='demanda-text'; td.contentEditable='true'; td.textContent=d.text||'';
+    td.addEventListener('input', dirty); row.appendChild(td);
+
+    // Obs
+    const ob = document.createElement('input');
+    ob.type='text'; ob.className='obs-input';
+    ob.placeholder='Observação / justificativa...'; ob.value=d.obs||'';
+    ob.addEventListener('input', dirty); row.appendChild(ob);
+
+    // Prazo
+    const pr = document.createElement('input');
+    pr.type='date'; pr.className='date-input'; pr.value=d.prazo||'';
+    pr.addEventListener('change', ()=>{ checkDate(pr); dirty(); });
+    checkDate(pr); row.appendChild(pr);
+
+    // createdAt (readonly)
+    const createdAt = d.createdAt || new Date().toISOString();
+    const ca = document.createElement('div');
+    ca.className='created-lbl';
+    ca.innerHTML='<span>'+new Date(createdAt).toLocaleDateString('pt-BR')+'</span>criado em';
+    row.appendChild(ca);
+
+    // Save
+    const saveBtn = makeSaveBtn();
+    saveBtn.onclick = async () => {
+      const f = fb(); if(!f){ toast('Configure o Firebase','err'); return; }
+      if(!_key){
+        const nr = f.push(f.ref(f.db,`bomdia/demandas/${area}`)); _key = nr.key;
+      }
+      saveBtn.classList.remove('dirty'); saveBtn.textContent='⏳';
+      try {
+        await f.set(f.ref(f.db,`bomdia/demandas/${area}/${_key}`),{
+          text:td.textContent.trim(), obs:ob.value,
+          prazo:pr.value, status:sw.querySelector('select').value,
+          createdAt: createdAt,
+        });
+        row.classList.remove('dirty'); setSaved(saveBtn); syncBadge('ok','Sincronizado');
+      } catch(e){ markDirtyBtn(saveBtn); toast('Erro: '+e.message,'err'); }
+    };
+    row.appendChild(saveBtn);
+
+    // Del — duplo-check → histórico
+    const del = document.createElement('button');
+    del.className='btn-del'; del.textContent='✕';
+    del.onclick = () => {
+      const label = td.textContent.trim() || 'demanda sem título';
+      openDeleteModal(label, async () => {
+        const currentStatus = sw.querySelector('select').value;
+        // Arquiva no histórico independente do status
+        await archiveToHistory(area, {
+          text: td.textContent.trim(), obs: ob.value,
+          prazo: pr.value, status: currentStatus, createdAt,
+        });
+        if (_key && fb()) fb().remove(fb().ref(fb().db,`bomdia/demandas/${area}/${_key}`)).catch(()=>{});
+        row.remove(); updateKPIs();
+        toast('Demanda arquivada no histórico', 'ok');
+      });
+    };
+    row.appendChild(del);
+
+    return row;
+  }
+
+  function checkDate(inp){
+    if(!inp.value) return;
+    const d=new Date(inp.value+'T00:00:00'), t=new Date(); t.setHours(0,0,0,0);
+    inp.classList.toggle('vencida', d<t);
+  }
+
+  function addRow(area){
+    const c=document.getElementById('rows-'+area);
+    const row=buildRow(area,{status:'aberto', createdAt: new Date().toISOString()},null);
+    c.appendChild(row);
+    row.querySelector('.demanda-text').focus();
+    markDirtyBtn(row.querySelector('.btn-save-row'));
+    row.classList.add('dirty'); updateKPIs();
+  }
+
+  function populateArea(area, data){
+    const c=document.getElementById('rows-'+area); c.innerHTML='';
+    Object.entries(data||{}).forEach(([k,d])=> c.appendChild(buildRow(area,d,k)));
+    updateKPIs();
+  }
+
+  function updateKPIs(){
+    const rows=document.querySelectorAll('#tab-rotina .demanda-row');
+    let tot=0,con=0,atr=0,and=0;
+    rows.forEach(r=>{
+      const s=r.querySelector('select'); if(!s) return; tot++;
+      if(s.value==='concluida') con++;
+      if(s.value==='atrasada')  atr++;
+      if(s.value==='andamento') and++;
+    });
+    document.getElementById('kpi-total').textContent=tot;
+    document.getElementById('kpi-conc').textContent=con;
+    document.getElementById('kpi-pct').textContent=tot?Math.round(con/tot*100)+'%':'0%';
+    document.getElementById('kpi-atr').textContent=atr;
+    document.getElementById('kpi-and').textContent=and;
+    ['ssma','pcm','adm','gestor'].forEach(a=>{
+      const n=document.querySelectorAll('#rows-'+a+' .demanda-row').length;
+      const el=document.getElementById('count-'+a);
+      if(el) el.textContent=n+(n===1?' demanda':' demandas');
+    });
+  }
+
+  // ── ORÇAMENTO ──
+  function calcSaldo(type){
+    const pv=id=>{
+      const v=(document.getElementById('orc-'+type+'-'+id)?.value||'')
+        .replace(/[^\d,.]/g,'').replace(',','.');
+      return parseFloat(v)||0;
+    };
+    const s=pv('orc')-pv('gasto');
+    const el=document.getElementById('orc-'+type+'-saldo'); if(!el) return;
+    el.style.color=s>=0?'var(--green-700)':'var(--red)';
+    el.textContent='R$ '+s.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  }
+
+  // ── SALVAR GLOBAL ──
+  async function saveGlobal(){
+    const btn=document.getElementById('btn-global-save');
+    btn.disabled=true; btn.textContent='⏳ Salvando...'; syncBadge('dirty','Salvando...');
+    const f=fb();
+    if(!f){ toast('Configure o Firebase','err',4000); btn.disabled=false; btn.textContent='☁️ Salvar tudo'; return; }
+    const payload={
+      caldeira:{
+        status:document.getElementById('caldeira-bar').className.replace('caldeira-bar ',''),
+        label:document.getElementById('caldeira-label').textContent,
+        obs:document.getElementById('caldeira-obs').value,
+      },
+      orcamento:{
+        man:{ orc:document.getElementById('orc-man-orc')?.value||'',  gasto:document.getElementById('orc-man-gasto')?.value||'' },
+        op: { orc:document.getElementById('orc-op-orc')?.value||'',   gasto:document.getElementById('orc-op-gasto')?.value||'' },
+        ssma:{ orc:document.getElementById('orc-ssma-orc')?.value||'',gasto:document.getElementById('orc-ssma-gasto')?.value||'' },
+      },
+      marcos:{
+        limpeza:document.getElementById('marco-limpeza')?.value||'',
+        periodo:document.getElementById('marco-periodo')?.value||'',
+      },
+      destaques:document.getElementById('destaques')?.value||'',
+      cruz: _cruzData,
+      updatedAt:new Date().toISOString(),
+    };
+    try{
+      await f.set(f.ref(f.db,'bomdia/global'), payload);
+      _gDirty=false; syncBadge('ok','Sincronizado'); toast('✓ Salvo com sucesso!','ok');
+    }catch(e){ syncBadge('error','Erro de sync'); toast('Erro: '+e.message,'err'); }
+    finally{ btn.disabled=false; btn.textContent='☁️ Salvar tudo'; }
+  }
+
+  function applyGlobal(g){
+    if(!g) return;
+    if(g.caldeira){
+      document.getElementById('caldeira-bar').className='caldeira-bar '+(g.caldeira.status||'ok');
+      document.getElementById('caldeira-label').textContent=g.caldeira.label||'Sem Ocorrências';
+      document.getElementById('caldeira-obs').value=g.caldeira.obs||'';
+    }
+    if(g.orcamento){
+      ['man','op','ssma'].forEach(t=>{
+        const o=g.orcamento[t]||{};
+        const oe=document.getElementById('orc-'+t+'-orc');
+        const ge=document.getElementById('orc-'+t+'-gasto');
+        if(oe&&o.orc)   oe.value=o.orc;
+        if(ge&&o.gasto) ge.value=o.gasto;
+        calcSaldo(t);
+      });
+    }
+    if(g.marcos){
+      const ml=document.getElementById('marco-limpeza');
+      const mp=document.getElementById('marco-periodo');
+      if(ml&&g.marcos.limpeza) ml.value=g.marcos.limpeza;
+      if(mp&&g.marcos.periodo) mp.value=g.marcos.periodo;
+    }
+    const de=document.getElementById('destaques');
+    if(de&&g.destaques!==undefined) de.value=g.destaques;
+    if(g.cruz) { _cruzData = g.cruz; renderCruz(); }
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  CRUZ VERDE DE SEGURANÇA
+  // ════════════════════════════════════════════════════════
+  let _cruzMode = 'pessoal'; // 'pessoal' | 'ambiental'
+  let _cruzData = { pessoal:{}, ambiental:{} }; // { 'pessoal': { '2026-07-15': 's0', ... } }
+  let _dpTarget = null; // { type, year, month, day }
+  let _dpSelected = null;
+
+  const CRUZ_COLORS = [
+    { code:'s0', color:'#52B788', label:'Sem acidentes' },
+    { code:'s1', color:'#FFD166', label:'Tipo I – SAA' },
+    { code:'s2', color:'#F4A622', label:'Tipo II – Sem afastamento' },
+    { code:'s3', color:'#E76F51', label:'Tipo III – Sem afastamento' },
+    { code:'s4', color:'#D32F2F', label:'Tipo IV – Com afastamento' },
+    { code:'s5', color:'#7B1FA2', label:'Tipo V/VI – Com afastamento' },
+    { code:'s6', color:'#90CAF9', label:'Aguardando classificação' },
+  ];
+
+  const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                  'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+  function switchCruz(mode) {
+    _cruzMode = mode;
+    document.getElementById('cruz-tab-pessoal').classList.toggle('active', mode==='pessoal');
+    document.getElementById('cruz-tab-ambiental').classList.toggle('active', mode==='ambiental');
+    renderCruz();
+  }
+
+  function renderCruz() {
+    const grid = document.getElementById('cruz-year-grid');
+    if (!grid) return;
+    const now = new Date();
+    const year = now.getFullYear();
+    const currentMonth = now.getMonth(); // 0-indexed
+    document.getElementById('cruz-year-label').textContent = year;
+    grid.innerHTML = '';
+
+    for (let m = 0; m < 12; m++) {
+      const col = document.createElement('div');
+      col.className = 'cruz-month' + (m === currentMonth ? ' current' : '');
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'cruz-month-name';
+      nameEl.textContent = MONTHS[m].slice(0,3).toUpperCase();
+      col.appendChild(nameEl);
+
+      const daysGrid = document.createElement('div');
+      daysGrid.className = 'cruz-month-days';
+
+      // Days in month
+      const daysInMonth = new Date(year, m+1, 0).getDate();
+      const firstDow    = new Date(year, m, 1).getDay(); // 0=Sun
+
+      // Empty cells before day 1
+      for (let e = 0; e < firstDow; e++) {
+        const empty = document.createElement('div');
+        empty.className = 'cruz-day empty';
+        daysGrid.appendChild(empty);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = `${year}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const status = (_cruzData[_cruzMode] || {})[key] || '';
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cruz-day' + (status ? ' '+status : '');
+        dayEl.textContent = d;
+        dayEl.title = `${d}/${m+1}/${year}`;
+        dayEl.onclick = () => openDayPicker(_cruzMode, year, m, d);
+        daysGrid.appendChild(dayEl);
+      }
+      col.appendChild(daysGrid);
+      grid.appendChild(col);
+    }
+  }
+
+  function openDayPicker(type, year, month, day) {
+    _dpTarget = { type, year, month, day };
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    _dpSelected = (_cruzData[type] || {})[key] || null;
+
+    document.getElementById('dp-title').textContent =
+      `${day < 10 ? '0'+day : day}/${(month+1) < 10 ? '0'+(month+1) : month+1}/${year} — ${type === 'pessoal' ? 'Pessoal' : 'Ambiental'}`;
+
+    const opts = document.getElementById('dp-options');
+    opts.innerHTML = '';
+    CRUZ_COLORS.forEach(c => {
+      const opt = document.createElement('div');
+      opt.className = 'dp-opt' + (c.code === _dpSelected ? ' selected' : '');
+      opt.innerHTML = `<div class="dp-color" style="background:${c.color}"></div><div class="dp-label">${c.label}</div>`;
+      opt.onclick = () => {
+        opts.querySelectorAll('.dp-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        _dpSelected = c.code;
+      };
+      opts.appendChild(opt);
+    });
+    document.getElementById('day-picker').classList.add('open');
+  }
+
+  function closeDayPicker() {
+    document.getElementById('day-picker').classList.remove('open');
+    _dpTarget = null; _dpSelected = null;
+  }
+
+  async function confirmDayPicker() {
+    if (!_dpTarget || !_dpSelected) { closeDayPicker(); return; }
+    const { type, year, month, day } = _dpTarget;
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    if (!_cruzData[type]) _cruzData[type] = {};
+    _cruzData[type][key] = _dpSelected;
+
+    // Save to Firebase immediately
+    const f = fb();
+    if (f) {
+      try {
+        await f.set(f.ref(f.db, `bomdia/cruz/${type}/${key}`), _dpSelected);
+        syncBadge('ok','Sincronizado');
+      } catch(e) { toast('Erro ao salvar cruz: '+e.message,'err'); }
+    } else {
+      markGlobalDirty();
+    }
+    closeDayPicker();
+    renderCruz();
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  DOO
+  // ════════════════════════════════════════════════════════
+  const DSM={
+    finalizado:{cls:'s-concluida',lbl:'✅ Finalizado'},
+    vencido:   {cls:'s-atrasada', lbl:'🚨 Vencido'},
+    aberto:    {cls:'s-aberto',   lbl:'🔵 Em Aberto'},
+    andamento: {cls:'s-andamento',lbl:'🔄 Em Andamento'},
+  };
+
+  function buildDooRow(d, fbKey){
+    let _key=fbKey||null;
+    const row=document.createElement('div'); row.className='doo-row new-row';
+    const createdAt = d.createdAt || new Date().toISOString();
+    const dirty=()=>{ row.classList.add('dirty'); markDirtyBtn(sb); updateDooKPIs(); };
+
+    const td=document.createElement('div'); td.className='doo-text';
+    td.contentEditable='true'; td.textContent=d.text||'';
+    td.addEventListener('input', dirty); row.appendChild(td);
+
+    const sel=document.createElement('select');
+    sel.className='doo-status-select '+(DSM[d.status]?.cls||'s-aberto');
+    Object.entries(DSM).forEach(([k,v])=>{
+      const o=document.createElement('option'); o.value=k; o.textContent=v.lbl;
+      if(k===d.status) o.selected=true; sel.append(o);
+    });
+    sel.onchange=function(){ this.className='doo-status-select '+(DSM[this.value]?.cls||'s-aberto'); dirty(); };
+    row.appendChild(sel);
+
+    const ti=document.createElement('input');
+    ti.type='text'; ti.className='tipo-input'; ti.value=d.tipo||''; ti.placeholder='ACR / Tipo';
+    ti.addEventListener('input', dirty); row.appendChild(ti);
+
+    // Prazo DOO
+    const pr=document.createElement('input');
+    pr.type='date'; pr.className='date-input'; pr.value=d.prazo||'';
+    pr.style.fontSize='10.5px';
+    pr.addEventListener('change', ()=>{ checkDate(pr); dirty(); });
+    checkDate(pr); row.appendChild(pr);
+
+    // createdAt DOO
+    const ca=document.createElement('div');
+    ca.className='created-lbl';
+    ca.innerHTML='<span>'+new Date(createdAt).toLocaleDateString('pt-BR')+'</span>criado em';
+    row.appendChild(ca);
+
+    const sb=makeSaveBtn();
+    sb.onclick=async()=>{
+      const f=fb(); if(!f){ toast('Configure o Firebase','err'); return; }
+      if(!_key){ const nr=f.push(f.ref(f.db,'bomdia/doo')); _key=nr.key; }
+      sb.classList.remove('dirty'); sb.textContent='⏳';
+      try{
+        await f.set(f.ref(f.db,'bomdia/doo/'+_key),{
+          text:td.textContent.trim(), status:sel.value, tipo:ti.value,
+          prazo:pr.value, createdAt,
+        });
+        row.classList.remove('dirty'); setSaved(sb); syncBadge('ok','Sincronizado');
+      }catch(e){ markDirtyBtn(sb); toast('Erro: '+e.message,'err'); }
+    };
+    row.appendChild(sb);
+
+    const del=document.createElement('button'); del.className='btn-del'; del.textContent='✕';
+    del.onclick=()=>{
+      const label = td.textContent.trim() || 'pendência sem título';
+      openDeleteModal(label, async () => {
+        await archiveToHistory('doo', {
+          text: td.textContent.trim(), status: sel.value,
+          tipo: ti.value, prazo: pr.value, createdAt,
+        });
+        if(_key&&fb()) fb().remove(fb().ref(fb().db,'bomdia/doo/'+_key)).catch(()=>{});
+        row.remove(); updateDooKPIs();
+        toast('Pendência arquivada no histórico','ok');
+      });
+    };
+    row.appendChild(del);
+    return row;
+  }
+
+  function addDooRow(){
+    const c=document.getElementById('rows-doo');
+    const row=buildDooRow({status:'aberto', createdAt: new Date().toISOString()},null);
+    c.appendChild(row);
+    row.querySelector('.doo-text').focus();
+    row.classList.add('dirty'); markDirtyBtn(row.querySelector('.btn-save-row'));
+    updateDooKPIs();
+  }
+
+  function updateDooKPIs(){
+    const rows=document.querySelectorAll('#rows-doo .doo-row');
+    let tot=0,fin=0,vec=0,ab=0;
+    rows.forEach(r=>{
+      const s=r.querySelector('.doo-status-select'); if(!s) return; tot++;
+      if(s.value==='finalizado') fin++;
+      if(s.value==='vencido')    vec++;
+      if(s.value==='aberto'||s.value==='andamento') ab++;
+    });
+    document.getElementById('doo-total').textContent=tot;
+    document.getElementById('doo-fin').textContent=fin;
+    document.getElementById('doo-venc').textContent=vec;
+    document.getElementById('doo-aberto').textContent=ab;
+  }
+
+  // ── DEFAULTS ──
+    const DEF={
+    ssma:{a1:{text:'Formalizar com a brigada de emergência Nexa sobre a pressão da água do hidrante e sobre a utilização da linha para uso no tanque de emergência',prazo:'2026-07-07',obs:'Realizado formalmente por email, aguardando retorno Nexa',status:'andamento'},a2:{text:'Programar ASO do Matheus',prazo:'2026-08-05',obs:'',status:'aberto'},a3:{text:'ART laudo SPDA — cobrar Marcel',prazo:'2026-06-15',obs:'Aguardando retorno Marcel',status:'atrasada'},a4:{text:'Aguardar orçamento dos ratos',prazo:'2026-07-16',obs:'',status:'aberto'},a5:{text:'Daniel: ASO vence 21/08 programar para 22/07; NR33 vence 30/09 fazer online',prazo:'2026-07-22',obs:'',status:'aberto'},a6:{text:'Odilon: integração Carla vence 13/09; NR11 vence 02/09 vir na UPV; NR35 vence 04/09 fazer online',prazo:'2026-09-02',obs:'',status:'aberto'},a7:{text:'Josi: ASO vence 11/09 — programar para 20/08',prazo:'2026-08-20',obs:'',status:'aberto'},a8:{text:'Romerito: ASO vence 11/09 — programar para 04/08',prazo:'2026-08-04',obs:'',status:'aberto'},a9:{text:'Natalício: integração Carla vence 13/09',prazo:'2026-09-13',obs:'',status:'aberto'},a10:{text:'Adriel: ASO vence 17/09 programar para 14/08; integração Carla vence 16/10',prazo:'2026-08-14',obs:'',status:'aberto'},a11:{text:'Matheus: ASO vence 17/09; NR20 vence 10/10 — verificar se pode ser online',prazo:'2026-09-17',obs:'',status:'aberto'},a12:{text:'Verificar com SSMA oficial de bloqueio para Paulo Roberto e Paulo Henrique',prazo:'',obs:'',status:'aberto'},a13:{text:'Verificar com SSMA treinamento PPT para Paulo Henrique',prazo:'',obs:'',status:'aberto'},a14:{text:'Levantamento de sinalização',prazo:'2026-07-14',obs:'',status:'andamento'},a15:{text:'Acompanhar procedimento de descarga roll-on na Locavia',prazo:'',obs:'',status:'aberto'}},
+    pcm:{b1:{text:'Verificar os FF do Fluig',prazo:'2026-07-15',obs:'Em andamento',status:'andamento'},b2:{text:'Elaborar preditiva — análise de óleo das pás carregadeiras',prazo:'2026-09-10',obs:'',status:'aberto'},b3:{text:'Adequação de lubrificação das pás carregadeiras (graxa + propulsora ok) — verificar com Wellington a validação da graxa',prazo:'2026-07-15',obs:'',status:'andamento'},b4:{text:'Cadastrar disjuntor motor dos compressores para acompanhar corrente elétrica',prazo:'2026-07-17',obs:'',status:'aberto'},b5:{text:'Reunião com William a respeito de rodar STD Liugong',prazo:'2026-07-10',obs:'',status:'atrasada'},b6:{text:'Coleta SPDA — itens danificados do container',prazo:'2026-07-24',obs:'Solicitado ao Willian Gomes em 08/07/2026',status:'aberto'},b7:{text:'Revisão plano de lubrificação',prazo:'2026-07-30',obs:'Planilha pendente de preenchimento técnico para revisão',status:'espera'},b8:{text:'Prospectar empresa para reforma de redutor',prazo:'',obs:'Aguardando chegar peças de reposição — Usitec irá fazer',status:'espera'},b9:{text:'Cadastrar/Orçamento purgador descarga contínua',prazo:'2026-07-10',obs:'Cadastrado e está no controle de demandas para abertura de SC',status:'atrasada'},b10:{text:'Solicitar OI de 60k para modificação dos drivers sistema de partida SAB',prazo:'2026-06-22',obs:'Ticket#: 0530903',status:'atrasada'},b11:{text:'Realizar orçamento/cadastro válvulas dos coletores de entrega de vapor',prazo:'2026-07-17',obs:'Cadastro realizado, no controle aguardando OI',status:'aberto'},b12:{text:'Realizar orçamento válvula de retenção saída da caldeira',prazo:'2026-07-17',obs:'Ticket Cadastro: 2580 — 10/07/2026',status:'aberto'},b13:{text:'Desenvolver fixação para eletrocalha',prazo:'2026-07-17',obs:'Presilhas cadastradas, está no controle para fazer SC',status:'aberto'},b14:{text:'Montar apresentação e solicitar OI para mudança parte climática do eletrocentro',prazo:'2026-07-17',obs:'',status:'aberto'},b15:{text:'Verificar viabilidade de instalar câmeras nos interiores dos chutes de transferência',prazo:'2026-08-15',obs:'Paulo Mateus depois das férias',status:'espera'},b16:{text:'Verificar a instalação das chapas acrílicos nos chutes de transferência',prazo:'2026-07-30',obs:'Projeto em andamento',status:'andamento'},b17:{text:'Cadastrar os FIT 201 para aquisição',prazo:'',obs:'',status:'aberto'},b18:{text:'Cadastrar os FIT 964/970 para aquisição',prazo:'',obs:'',status:'aberto'},b19:{text:'Cadastrar os FIT 101 para aquisição',prazo:'',obs:'',status:'aberto'},b20:{text:'Cadastrar os FIT 901 para aquisição',prazo:'',obs:'',status:'aberto'},b21:{text:'Cadastrar os FIT 204.1/2 (pressão) para aquisição',prazo:'',obs:'',status:'aberto'},b22:{text:'Cadastrar os FIT 401.1/2 (fornalha) para aquisição',prazo:'',obs:'',status:'aberto'},b23:{text:'Cadastrar os LIT101.1/2 (nível caldeira) para aquisição',prazo:'',obs:'',status:'aberto'},b24:{text:'Cadastrar válvulas de drenos do desaerador para aquisição',prazo:'',obs:'',status:'aberto'},b25:{text:'Cadastrar válvula de bloqueio manual da descarga de fundo',prazo:'',obs:'',status:'aberto'},b26:{text:'Solicitar com a Emerson orçamento para válvula de recirculação das bombas',prazo:'',obs:'',status:'aberto'},b27:{text:'Realizar atividade manutenção nos compressores 921 e 922',prazo:'',obs:'Processo com GDI — 07/07/2026',status:'andamento'},b28:{text:'Realizar SC das guias laterais da TC4',prazo:'2026-07-17',obs:'Fábio verificar código',status:'aberto'},b29:{text:'Cadastrar câmera CFTV',prazo:'',obs:'',status:'aberto'},b30:{text:'Cadastrar novo nobreak no sistema e rodar STD para o mesmo',prazo:'',obs:'',status:'aberto'}},
+    adm:{c1:{text:'Realizar levantamento de compras emergenciais/delegadas para eliminação',prazo:'2026-08-30',obs:'',status:'aberto'},c2:{text:'OI 1387 preventiva compressor 921 — verificar saldo restante',prazo:'2026-08-19',obs:'',status:'aberto'},c3:{text:'OI 1426 preventiva 922 — verificar saldo restante',prazo:'2026-08-19',obs:'',status:'aberto'},c4:{text:'Duas diárias MTP — Pedido 134.892 — Criar grupo no Teams com Sandra',prazo:'2026-07-10',obs:'',status:'atrasada'},c5:{text:'Realizar SC confecção sala SSMA — Visual Artes',prazo:'2026-07-14',obs:'Verificar CC para verba — Serviço Predial — Enviado 3k',status:'andamento'},c6:{text:"Buscar tinta preta e tinta cinza esmalte a base d'água",prazo:'2026-07-15',obs:'',status:'aberto'},c7:{text:'Listar itens da case W20 para transferir para AGT',prazo:'2026-08-30',obs:'',status:'aberto'},c8:{text:'Configurar novo rádio da manutenção',prazo:'2026-07-16',obs:'',status:'aberto'},c9:{text:'Realizar aquisição do rádio faltante da operação',prazo:'2026-07-16',obs:'',status:'aberto'},c10:{text:'418602 — Realizar SC para aquisição de 01 transmissor/conversor — reposição de estoque (SC delegada) — empresa Consistec',prazo:'2026-07-16',obs:'',status:'aberto'},c11:{text:'Cadastrar itens para análise de água e realizar SC',prazo:'2026-07-15',obs:'Item 600054 — Obsoleto',status:'atrasada'},c12:{text:'SC itens reagentes para análise de água',prazo:'2026-07-15',obs:'',status:'aberto'},c13:{text:'410643 — 02 termopares reposição de estoque — utilização caixas de ar da fornalha (SC delegada) — empresa Consistec',prazo:'2026-07-16',obs:'Aguardando — cobrei no WhatsApp',status:'espera'},c14:{text:'Realizar orçamento e SC para aquisição de itens do piso nova sala copa',prazo:'2026-07-17',obs:'',status:'aberto'},c15:{text:'SC projeto lança de limpeza do espelho',prazo:'2026-07-15',obs:'Fluig — 660099',status:'aberto'}},
+    gestor:{d1:{text:'Revisar procedimentos operacionais aplicáveis ao bloqueio operacional',prazo:'',obs:'',status:'aberto'},d2:{text:'Acompanhar o dia a dia do time de manutenção',prazo:'',obs:'',status:'aberto'},d3:{text:'Verificar código',prazo:'',obs:'',status:'aberto'},d4:{text:'Treinar equipe no plano de lubrificação da UPV',prazo:'2026-06-17',obs:'',status:'atrasada'},d5:{text:'Normalizar funcionamento do condutivímetro online',prazo:'',obs:'',status:'aberto'},d6:{text:'Colar adesivo livro da caldeira',prazo:'2026-07-14',obs:'',status:'aberto'},d7:{text:'Conversar com suprimentos sobre a possibilidade de SC quando frete for FOB abrir junto com a SC inicial; verificar também quando é FOB ou CIF',prazo:'',obs:'',status:'aberto'},d8:{text:'Verificar alarme sonoro de acionamento cordoalha de emergência',prazo:'2026-06-18',obs:'',status:'atrasada'},d9:{text:'Discos de freio Liugong — aguardando retorno Tractorbell',prazo:'',obs:'',status:'espera'},d10:{text:'Movimentar OI 1570 (escada plataforma R$ 8k) e OI (soprador folhas R$ 6k) e criar OI aquisição móveis salas administrativas',prazo:'',obs:'',status:'aberto'},d11:{text:'Verificar sobre NFs com SLA 64 dias',prazo:'2026-07-07',obs:'',status:'atrasada'},d12:{text:'Verificar com Diogo a OI aquisição de móveis administrativos para modificar vencimento da data',prazo:'',obs:'',status:'aberto'}},
+  };
+    const DEF_DOO={e1:{text:'Realizar estudo viabilidade para instalação termopares nas caixas de ar do grelhado',status:'finalizado',tipo:'ACR 70'},e2:{text:'Substituir termopares sistema de incêndio roscas',status:'vencido',tipo:'ACR 171'},e3:{text:'Substituir solenóides dos splinters',status:'finalizado',tipo:'ACR 171'},e4:{text:'Estudar viabilidade de um tanque reserva ou mudar entrada de alimentação da água (desmi ou hidrante) para o tanque de emergência',status:'vencido',tipo:'ACR 171'},e5:{text:'Ajuste nas laterais do tambor de acionamento TC1',status:'vencido',tipo:'ACR 196'},e6:{text:'Instalar sensor radar no silo',status:'aberto',tipo:'ACR 196'},e7:{text:'Instalar direcionador de fluxo no silo',status:'aberto',tipo:'ACR 196'},e8:{text:'Verificar o uso de câmera no interior do silo',status:'finalizado',tipo:'ACR 196'},e9:{text:'Substituir mancal M502',status:'aberto',tipo:'ACR 197'},e10:{text:'Instalar feltro nos flanges das roscas',status:'vencido',tipo:'ACR 197'},e11:{text:'Revisar plano de lubrificação da unidade',status:'vencido',tipo:'ACR 197'},e12:{text:'Treinar equipe no processo de lubrificação',status:'vencido',tipo:'ACR 197'},e13:{text:'Viabilidade de mancal bipartido para as roscas do silo',status:'vencido',tipo:'ACR 197'},e14:{text:'Viabilidade de dosadores automáticos nos mancais das roscas do silo',status:'finalizado',tipo:'ACR 197'},e15:{text:'Viabilidade para instalação de pHmetro e condutividade online',status:'vencido',tipo:'ACR 204'},e16:{text:'Viabilidade para controle automático de dosagem de químicos',status:'vencido',tipo:'ACR 204'},e17:{text:'Realizar limpeza química na caldeira',status:'aberto',tipo:'ACR 204'},e18:{text:'Válvulas do último piso próximo da PSV sem tag',status:'finalizado',tipo:'ACR'},e19:{text:'Válvulas dos visores de nível sem tag',status:'finalizado',tipo:'ACR'},e20:{text:'Válvula do dreno da linha sem volante e sem tag',status:'finalizado',tipo:'ACR'},e21:{text:'Ensaiar nobreak com carga',status:'finalizado',tipo:'ACR 387'},e22:{text:'Reinstalar nobreak',status:'finalizado',tipo:'ACR 387'},e23:{text:'Revisar procedimento de inspeção nobreak incluindo teste funcional',status:'finalizado',tipo:'ACR 387'},e24:{text:'Implementar transferência automática entre nobreak e concessionária',status:'finalizado',tipo:'ACR 387'},e25:{text:'Verificar viabilidade de substituir nobreak atual por nobreak de paralelismo',status:'finalizado',tipo:'ACR 387'},e26:{text:'Implantar monitoramento remoto UPS',status:'aberto',tipo:'ACR 387'},e27:{text:'Realizar calibração válvulas de recirculação mínima',status:'finalizado',tipo:'ACR 401'},e28:{text:'Criar plano periódico de inspeção e substituição válvulas de retenção água/vapor',status:'finalizado',tipo:'ACR 401'},e29:{text:'Realizar estudo controle remoto VFD das bombas alimentação',status:'finalizado',tipo:'ACR 401'},e30:{text:'Normalizar canaletas cabos do exaustor tiragem',status:'finalizado',tipo:'Insp SSMA'},e31:{text:'Inspecionar pontos de tomadas semelhantes nos containers de carga crítica',status:'finalizado',tipo:'ACR 459'},e32:{text:'Revisar matriz de bloqueio para QDC salas operacionais',status:'finalizado',tipo:'ACR 459'},e33:{text:'Criar procedimento para aprovação de modificações em circuitos elétricos',status:'finalizado',tipo:'ACR 459'},e34:{text:'Identificar circuitos críticos e tomadas associadas sala operação',status:'finalizado',tipo:'ACR 459'},e35:{text:'Implementar proteção seletiva para circuito derivados de tomadas de serviço',status:'finalizado',tipo:'ACR 459'},e36:{text:'Corrigir lógica de alarme supervisório chave emergência TC04',status:'finalizado',tipo:'ACR 531'},e37:{text:'LPP rearme cordoalha de emergência',status:'finalizado',tipo:'ACR 531'},e38:{text:'Treinar equipe geral na LPP rearme cordoalha emergência',status:'vencido',tipo:'ACR 531'},e39:{text:'Verificar viabilidade de instalar sinal luminoso nas botoeiras de emergência',status:'finalizado',tipo:'ACR 531'},e40:{text:'Instalar alarme sonoro para atuação botoeira de emergência',status:'vencido',tipo:'ACR 531'},e41:{text:'Implementar GMUD',status:'finalizado',tipo:'ACR 531'},e42:{text:'Atualizar projeto da mudança realizada',status:'finalizado',tipo:'ACR 531'},e43:{text:'Placas de EC nos ACS',status:'finalizado',tipo:'Insp SSMA'},e44:{text:'Orçamento revestimento proteções Revestman',status:'finalizado',tipo:'Insp SSMA'},e45:{text:'Proteção produtos químicos',status:'aberto',tipo:'Insp SSMA'},e46:{text:'Inserir tampas faltantes nas eletrocalhas',status:'aberto',tipo:'Insp SSMA'},e47:{text:'Estrutura TC3 danificada',status:'aberto',tipo:'Insp SSMA'},e48:{text:'Reparo nas proteções NR12 válvulas rotativas do ACS',status:'finalizado',tipo:'Insp SSMA'},e49:{text:'Reparar ar condicionado 02 do eletrocentro',status:'finalizado',tipo:'ACR 648'},e50:{text:'Substituir ponte retificadora',status:'finalizado',tipo:'ACR 648'},e51:{text:'Realizar análise termográfica',status:'finalizado',tipo:'ACR 648'},e52:{text:'Normalizar medidor de temperatura do eletrocentro',status:'finalizado',tipo:'ACR 648'},e53:{text:'Capacitar equipe de manutenção na identificação do estoque e localização de itens críticos',status:'finalizado',tipo:'ACR 648'},e54:{text:'Elaborar método de acompanhamento para execução de serviços e materiais com SLA de suprimentos',status:'finalizado',tipo:'ACR 648'},e55:{text:'Treinar PCM e ADM no método de acompanhamento de serviços e materiais com SLA de suprimentos',status:'finalizado',tipo:'ACR 648'},e56:{text:'Avaliar substituição da ponte por módulo de redundância',status:'finalizado',tipo:'ACR 648'},e57:{text:'Avaliar mudança de substituição tipo de climatização do eletrocentro',status:'aberto',tipo:'ACR 648'},e58:{text:'Revisão STD002 correias',status:'finalizado',tipo:'ACR 317'},e59:{text:'Treinar equipe na LPP troca de redutor',status:'finalizado',tipo:'ACR 317'},e60:{text:'Treinar equipe na LPP alinhamento de correias',status:'finalizado',tipo:'ACR 317'},e61:{text:'Criar LPP troca de redutor',status:'finalizado',tipo:'ACR 317'},e62:{text:'Criar LPP alinhamento de correias',status:'finalizado',tipo:'ACR 317'},e63:{text:'Troca do fusível danificado',status:'finalizado',tipo:'ACR 656'},e64:{text:'Elaborar STD para inspeção invasiva anual dos ventiladores',status:'finalizado',tipo:'ACR 607'},e65:{text:'Elaborar STD bienal ou trienal para substituição de elemento elástico dos ventiladores',status:'finalizado',tipo:'ACR 607'},e66:{text:'Treinar a equipe na inspeção invasiva dos acoplamentos dos ventiladores',status:'finalizado',tipo:'ACR 607'},e67:{text:'Realizar estudo de viabilidade para substituição do acoplamento do ventilador de tiragem',status:'finalizado',tipo:'ACR 607'},e68:{text:'Substituir rolamento e mancal do ventilador',status:'finalizado',tipo:'ACR 607'},e69:{text:'Realizar alinhamento do motor tiragem',status:'finalizado',tipo:'ACR 607'},e70:{text:'Verificar a possibilidade de intertravar a velocidade do sistema SAB com o sensor de nível silo',status:'finalizado',tipo:'ACR 196'}};
+
+  function useDefaults(){
+    ['ssma','pcm','adm','gestor'].forEach(a => populateArea(a, DEF[a]));
+    const c=document.getElementById('rows-doo'); c.innerHTML='';
+    Object.entries(DEF_DOO).forEach(([k,d])=> c.appendChild(buildDooRow(d,k)));
+    updateDooKPIs();
+    renderCruz();
+  }
+
+  // ── INIT ──
+  function init(){
+    const el=document.getElementById('today-date');
+    if(el) el.textContent=new Date().toLocaleDateString('pt-BR',{
+      weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'
+    });
+
+    const f=fb();
+    if(f){
+      ['ssma','pcm','adm','gestor'].forEach(area=>{
+        f.onValue(f.ref(f.db,`bomdia/demandas/${area}`), snap=>{
+          const data=snap.val();
+          if(data){ populateArea(area,data); }
+          else { f.set(f.ref(f.db,`bomdia/demandas/${area}`), DEF[area]); }
+        });
+      });
+      f.onValue(f.ref(f.db,'bomdia/doo'), snap=>{
+        const data=snap.val();
+        const c=document.getElementById('rows-doo'); c.innerHTML='';
+        const src=data||DEF_DOO;
+        if(!data) f.set(f.ref(f.db,'bomdia/doo'), DEF_DOO);
+        Object.entries(src).forEach(([k,d])=> c.appendChild(buildDooRow(d,k)));
+        updateDooKPIs();
+      });
+      f.onValue(f.ref(f.db,'bomdia/global'), snap=>{
+        applyGlobal(snap.val()); syncBadge('ok','Sincronizado'); _gDirty=false;
+      });
+      // Cruz verde — escuta tempo real
+      f.onValue(f.ref(f.db,'bomdia/cruz'), snap=>{
+        const data=snap.val();
+        if(data) _cruzData = data;
+        renderCruz();
+      });
+      // Histórico — carrega uma vez
+      f.onValue(f.ref(f.db,'bomdia/historico'), snap=>{
+        const data=snap.val();
+        if(data){
+          Object.keys(data).forEach(area=>{
+            _history[area] = Object.values(data[area]||{});
+          });
+        }
+      });
+    } else {
+      useDefaults();
+      syncBadge('error','Sem Firebase — modo local');
+    }
+    ['man','op','ssma'].forEach(calcSaldo);
+  }
+
+  return {
+    init, switchTab, setCaldeira, toggleArea,
+    addRow, addDooRow, calcSaldo, saveGlobal, markGlobalDirty,
+    openHistory, closeHistory,
+    openDeleteModal, closeDeleteModal,
+    switchCruz, openDayPicker, closeDayPicker, confirmDayPicker,
+  };
+
+})();
+
+function initBomDia(){ BomDia.init(); }
+
+// Only init when Firebase explicitly fires 'firebase-ready' (after auth check).
+// NO timeout fallback here — bom_dia_trm.html always requires auth.
+// If Firebase fails to load, the page stays blank (correct — no bypass of auth).
+window.addEventListener('firebase-ready', () => { initBomDia(); });
+</script>
+</body>
+</html>
