@@ -4374,21 +4374,66 @@ function initFirebase() {
   if (!window._fbReady) { document.addEventListener('fb-ready', initFirebase, {once:true}); return; }
   const { db, ref, onValue } = window._fb;
 
+  // Campos padrão para cards antigos que não têm os novos campos
+  function normalizarCard(c) {
+    const defaults = {
+      delTipo:'', srvStatus:'', curSrvStatus:'',
+      entrega:'', nfNumero:'', nfEmissao:'', nfFluig:'', nfObs:'',
+      fiscalEnvio:'', fiscalRetorno:'',
+      chegada:'', chegou:false, recebTipo:'', nfDevol:'', recebOk:false,
+      chegada2:'', nf2Numero:'', fiscal2Envio:'', fiscal2Retorno:'', nf2Devol:'', recebOk2:false,
+      srvNfNumero:'', srvNfEmissao:'', srvNfFluig:'', srvNfObs:'', srvFiscalEnvio:'', srvRecebOk:false,
+      emFreteEm:'', emNfNumero:'', emNfEmissao:'', emNfFluig:'', emNfObs:'',
+      emFiscalEnvio:'', emRecebOk:false,
+      emFreteForn:'', emFreteCNPJ:'', emFreteValor:'', emFretePrazo:'',
+      rascunho:false, done:false, concluido:'',
+      gerente:'', analistaOC:'', dataOC:'', dataPC:'', pcForn:'',
+      cifForn:'', cifCNPJ:'', cifPrazo:'',
+      fluigFOB:'', fluigFOBdata:'', ocFOB:'', ocFOBdata:'', pcFOB:'', fobPrazo:'',
+      freteForn:'', freteCNPJ:'', freteValor:'', fretePrazo:'',
+      justif:'', itens:[], checklist:[], files:[],
+    };
+    return { ...defaults, ...c };
+  }
+
   // Escuta cards ativos em tempo real
   onValue(ref(db, 'cards'), snap => {
     const data = snap.val() || {};
-    cards = Object.values(data);
-    // Converter IDs para número para garantir consistência do nextId
-    const maxId = cards.length ? Math.max(...cards.map(c => parseInt(c.id)||0)) : 0;
-    if (maxId >= nextId) nextId = maxId + 1;
+    const novosCards = Object.values(data).map(normalizarCard);
+
+    // Preservar card em edição para não sobrescrever o que o usuário está digitando
+    if (editId !== null) {
+      const cardAtualLocal = cards.find(c => String(c.id) === String(editId));
+      cards = novosCards;
+      if (cardAtualLocal) {
+        const idx = cards.findIndex(c => String(c.id) === String(editId));
+        if (idx >= 0) cards[idx] = cardAtualLocal;
+      }
+    } else {
+      cards = novosCards;
+    }
+
+    // nextId deve ser maior que qualquer ID em cards E cardsDone
+    const maxAtivos = cards.length ? Math.max(...cards.map(c => parseInt(c.id)||0)) : 0;
+    const maxDone   = cardsDone.length ? Math.max(...cardsDone.map(c => parseInt(c.id)||0)) : 0;
+    const maxGlobal = Math.max(maxAtivos, maxDone);
+    if (maxGlobal >= nextId) nextId = maxGlobal + 1;
+
     render();
   });
 
   // Escuta histórico em tempo real
   onValue(ref(db, 'cardsDone'), snap => {
     const data = snap.val() || {};
-    cardsDone = Object.values(data).sort((a,b) => (b.concluido||'').localeCompare(a.concluido||''));
+    cardsDone = Object.values(data)
+      .sort((a,b) => (b.concluido||'').localeCompare(a.concluido||''));
     document.getElementById('hist-badge').textContent = cardsDone.length;
+
+    // Recalcular nextId considerando histórico
+    const maxDone   = cardsDone.length ? Math.max(...cardsDone.map(c => parseInt(c.id)||0)) : 0;
+    const maxAtivos = cards.length ? Math.max(...cards.map(c => parseInt(c.id)||0)) : 0;
+    const maxGlobal = Math.max(maxAtivos, maxDone);
+    if (maxGlobal >= nextId) nextId = maxGlobal + 1;
   });
 }
 
